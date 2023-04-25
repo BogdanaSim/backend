@@ -15,7 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 public class Schedule {
 
     @Id

@@ -15,7 +15,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
