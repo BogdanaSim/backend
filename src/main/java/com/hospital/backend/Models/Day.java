@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -20,14 +21,14 @@ import java.util.Objects;
 @ToString
 public class Day {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "Date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
     @ToString.Exclude

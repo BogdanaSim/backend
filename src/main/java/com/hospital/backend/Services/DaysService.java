@@ -3,6 +3,7 @@ package com.hospital.backend.Services;
 import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Models.Day;
 import com.hospital.backend.Repositories.DaysRepository;
+import com.hospital.backend.Repositories.ShiftsRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 public class DaysService implements IDaysService{
 
     private final DaysRepository daysRepository;
+
+    private final ShiftsRepository shiftsRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(DaysService.class);
 

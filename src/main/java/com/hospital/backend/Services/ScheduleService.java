@@ -11,11 +11,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ScheduleService implements IScheduleService{
 
     private final SchedulesRepository schedulesRepository;
+    private final DaysRepository daysRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
@@ -23,7 +31,9 @@ public class ScheduleService implements IScheduleService{
     @Override
     public Schedule save(Schedule schedule) {
         logger.info("save schedule: " + schedule.getDate());
-        this.schedulesRepository.findById(schedule.getId()).orElseThrow(ScheduleNotFoundException::new);
+        Optional<Schedule> scheduleOptional = this.schedulesRepository.findByDate(schedule.getDate());
+        scheduleOptional.ifPresent(value -> schedule.setId(value.getId()));
+        //this.schedulesRepository.findByDate(schedule.getDate()).orElseThrow(ScheduleNotFoundException::new);
         return schedulesRepository.save(schedule);
     }
 
@@ -46,5 +56,17 @@ public class ScheduleService implements IScheduleService{
         logger.info("update schedule: " + schedule.getId());
         schedulesRepository.findById(schedule.getId()).orElseThrow(ScheduleNotFoundException::new);
         return schedulesRepository.save(schedule);
+    }
+
+    public void addNewDaysSchedule(Schedule schedule){
+        int year = schedule.getDate().getYear();
+        Month month = schedule.getDate().getMonth();
+        YearMonth ym = YearMonth.of(year,month);
+        LocalDate firstOfMonth = ym.atDay(1);
+        LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
+        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+
+        System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
+        System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 }

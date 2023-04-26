@@ -17,9 +17,17 @@ import java.util.Objects;
 @ToString
 public class UserProfile {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
+
+    @Column(name = "FirstName")
+    @Length(min = 5, max = 1000)
+    private String firstName;
+
+    @Column(name = "LastName")
+    @Length(min = 5, max = 1000)
+    private String lastName;
 
     @Column(name = "Details")
     @Length(min = 5, max = 1000)

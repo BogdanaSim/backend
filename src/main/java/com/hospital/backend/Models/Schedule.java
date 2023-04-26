@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,13 +19,13 @@ import java.util.List;
 public class Schedule {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
-    @JsonFormat(pattern = "yyyy-MM")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "Date")
-    private LocalDateTime date;
+    private LocalDate date;
 
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
     @ToString.Exclude

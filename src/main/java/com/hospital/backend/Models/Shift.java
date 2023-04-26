@@ -19,7 +19,7 @@ import java.util.Objects;
 @ToString
 public class Shift {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
