@@ -18,8 +18,8 @@ public class ScheduleConverter implements IConverter<Schedule, ScheduleDTO>{
             schedule.setId(scheduleDTO.getId());
         schedule.setDate(scheduleDTO.getDate());
         Department department = new Department();
-        department.setId(scheduleDTO.getDepartmentDTO().getId());
-        department.setName(scheduleDTO.getDepartmentDTO().getName());
+        department.setId(scheduleDTO.getDepartment().getId());
+        department.setName(scheduleDTO.getDepartment().getName());
         schedule.setDepartment(department);
         return schedule;
     }
@@ -34,7 +34,7 @@ public class ScheduleConverter implements IConverter<Schedule, ScheduleDTO>{
         scheduleDTO.setDate(schedule.getDate());
         departmentDTO.setId(schedule.getDepartment().getId());
         departmentDTO.setName(schedule.getDepartment().getName());
-        scheduleDTO.setDepartmentDTO(departmentDTO);
+        scheduleDTO.setDepartment(departmentDTO);
         return scheduleDTO;
     }
 
