@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Users_profile")
+@Table(name = "users_profile")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -18,27 +18,21 @@ import java.util.Objects;
 public class UserProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "FirstName")
-    @Length(min = 5, max = 1000)
-    private String firstName;
 
-    @Column(name = "LastName")
-    @Length(min = 5, max = 1000)
-    private String lastName;
 
-    @Column(name = "Details")
+    @Column(name = "details")
     @Length(min = 5, max = 1000)
     private String details;
 
-    @Column(name = "Phone_number")
+    @Column(name = "phone_number")
     @Length(min = 4, max = 1000)
     private String phoneNumber;
 
     @Lob
-    @Column(name = "Profile_picture")
+    @Column(name = "profile_picture")
     @ToString.Exclude
     private byte[] profilePicture;
 
@@ -47,7 +41,7 @@ public class UserProfile {
             CascadeType.MERGE
     },fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "Id")
+    @JoinColumn(name = "id")
     @ToString.Exclude
     @JsonIgnore
     private User user;

@@ -18,6 +18,7 @@ import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,7 +80,28 @@ public class ScheduleService implements IScheduleService{
 
         });
 
+
        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
+    }
+
+    public List<Day> getNewDaysSchedule(Schedule schedule) {
+        List<Day> newDaysSchedule = new ArrayList<>();
+        int year = schedule.getDate().getYear();
+        Month month = schedule.getDate().getMonth();
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstOfMonth = ym.atDay(1);
+        LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
+        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
+            Day day = new Day();
+            day.setSchedule(schedule);
+            day.setDate(date);
+            day.setShifts(new ArrayList<>());
+            newDaysSchedule.add(day);
+
+
+        });
+        return newDaysSchedule;
     }
 }

@@ -4,6 +4,7 @@ import com.hospital.backend.Converters.ScheduleConverter;
 import com.hospital.backend.DTOs.ScheduleDTO;
 import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Services.ScheduleService;
+import com.hospital.backend.Services.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,22 @@ public class SchedulesController {
 
     private final ScheduleService scheduleService;
 
+    private final UsersService usersService;
+
     private final ScheduleConverter scheduleConverter;
 
     @PostMapping("/addNewDaysSchedule")
     public ScheduleDTO addNewDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         scheduleService.addNewDaysSchedule(schedule);
+        return scheduleDTO;
+    }
+
+    @PostMapping("/getNewDaysSchedule")
+    public ScheduleDTO getNewDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
+        schedule.setDays(scheduleService.getNewDaysSchedule(schedule));
+        System.out.println(schedule.toString(usersService.getAllUsers()));
         return scheduleDTO;
     }
 

@@ -1,7 +1,6 @@
 package com.hospital.backend.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hospital.backend.Models.Department;
 import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,15 +8,16 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class ScheduleDTO {
+public class DayDTO {
+
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
-    private DepartmentDTO departmentDTO;
+    private Long scheduleId;
+
 }

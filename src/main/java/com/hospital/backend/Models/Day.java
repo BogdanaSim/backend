@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Days")
+@Table(name = "days")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -22,12 +22,12 @@ import java.util.Objects;
 public class Day {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "id")
     private Long id;
 
 
     @JsonFormat(pattern = "yyyy-MM-dd")
-    @Column(name = "Date")
+    @Column(name = "date")
     private LocalDate date;
 
     @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
@@ -36,7 +36,7 @@ public class Day {
     private List<Shift> shifts;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Schedule_id")
+    @JoinColumn(name = "schedule_id")
     @ToString.Exclude
     @JsonIgnore
     private Schedule schedule;
@@ -52,5 +52,11 @@ public class Day {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Day{"  + date.getDayOfMonth() +
+                '}';
     }
 }

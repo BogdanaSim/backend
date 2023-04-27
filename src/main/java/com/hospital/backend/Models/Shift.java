@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Shifts")
+@Table(name = "shifts")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -20,22 +20,22 @@ import java.util.Objects;
 public class Shift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "Type")
+    @Column(name = "type")
     @Length(min = 1, max = 2)
     private String type;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "User_id")
+    @JoinColumn(name = "user_id")
     @ToString.Exclude
     @JsonIgnore
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Day_id")
+    @JoinColumn(name = "day_id")
     @ToString.Exclude
     @JsonIgnore
     private Day day;
@@ -51,5 +51,10 @@ public class Shift {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return  type ;
     }
 }
