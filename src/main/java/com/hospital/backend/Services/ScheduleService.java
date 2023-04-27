@@ -2,6 +2,7 @@ package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Exceptions.ScheduleNotFoundException;
+import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Repositories.DaysRepository;
 import com.hospital.backend.Repositories.SchedulesRepository;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Optional;
 
@@ -64,9 +66,20 @@ public class ScheduleService implements IScheduleService{
         YearMonth ym = YearMonth.of(year,month);
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+       // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
+            Day day = new Day();
+            day.setSchedule(schedule);
+            day.setDate(date);
+            Optional<Day> dayOptional = this.daysRepository.findByDate(date);
+            dayOptional.ifPresent(value -> day.setId(value.getId()));
+            if(dayOptional.isEmpty()){
+                daysRepository.save(day);
+            }
 
-        System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
-        System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
+        });
+
+       // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
+       // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 }

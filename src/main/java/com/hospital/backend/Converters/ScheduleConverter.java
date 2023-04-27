@@ -12,7 +12,8 @@ public class ScheduleConverter implements IConverter<Schedule, ScheduleDTO>{
     @Override
     public Schedule convertDtoToModel(ScheduleDTO scheduleDTO) {
         Schedule schedule = new Schedule();
-       // schedule.setId(scheduleDTO.getId());
+        if(scheduleDTO.getId()!=null)
+            schedule.setId(scheduleDTO.getId());
         schedule.setDate(scheduleDTO.getDate());
         return schedule;
     }
