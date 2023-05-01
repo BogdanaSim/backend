@@ -30,7 +30,7 @@ public class SchedulesController {
     @PostMapping("/getNewDaysSchedule")
     public ScheduleDTO getNewDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
-        schedule.setDays(scheduleService.getNewDaysSchedule(schedule));
+        schedule.setDays(scheduleService.getNewDaysSchedule(schedule,usersService.getAllUsers().get(0)));
         System.out.println(schedule.toString(usersService.getAllUsers()));
         return scheduleDTO;
     }

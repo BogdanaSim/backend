@@ -1,0 +1,38 @@
+package com.hospital.backend.rules;
+import java.time.DayOfWeek;
+import com.hospital.backend.Models.*;
+import java.time.LocalDate
+import java.util.ArrayList
+import java.util.Arrays
+import java.util.List;
+global com.hospital.backend.Models.User user;
+
+dialect  "mvel"
+
+declare enum DaysOfWeek
+   SUN("Sunday"),MON("Monday"),TUE("Tuesday"),WED("Wednesday"),THU("Thursday"),FRI("Friday"),SAT("Saturday");
+    fullName : String
+end
+
+rule "Change Day"
+    when
+        $day: Day(date.getDayOfWeek() == DayOfWeek.MONDAY)
+    then
+        $day.setShifts(List.of(new Shift(1L,"1",user,$day)));
+end
+
+//rule "Suggest Senior developer Role"
+//    when
+//        Applicant(experienceInYears > 5 && experienceInYears <= 10)
+//        Applicant(currentSalary > 500000 && currentSalary <= 1500000)
+//    then
+//        suggestedRole.setRole("Senior developer");
+//end
+//
+//rule "Suggest Developer Role"
+//    when
+//        Applicant(experienceInYears > 0 && experienceInYears <= 5)
+//        Applicant(currentSalary > 200000 && currentSalary <= 1000000)
+//    then
+//        suggestedRole.setRole("Developer");
+//end

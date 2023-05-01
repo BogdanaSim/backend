@@ -4,9 +4,13 @@ import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Exceptions.ScheduleNotFoundException;
 import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
+import com.hospital.backend.Models.User;
 import com.hospital.backend.Repositories.DaysRepository;
 import com.hospital.backend.Repositories.SchedulesRepository;
+import com.hospital.backend.RulesConfig.DroolsBeanFactory;
 import lombok.RequiredArgsConstructor;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +29,8 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ScheduleService implements IScheduleService{
 
+
+    private KieSession kieSession;
     private final SchedulesRepository schedulesRepository;
     private final DaysRepository daysRepository;
 
@@ -85,7 +91,7 @@ public class ScheduleService implements IScheduleService{
        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 
-    public List<Day> getNewDaysSchedule(Schedule schedule) {
+    public List<Day> getNewDaysSchedule(Schedule schedule, User user) {
         List<Day> newDaysSchedule = new ArrayList<>();
         int year = schedule.getDate().getYear();
         Month month = schedule.getDate().getMonth();
@@ -102,6 +108,14 @@ public class ScheduleService implements IScheduleService{
 
 
         });
+        kieSession= new DroolsBeanFactory().getKieSession();
+
+        for(Day day : newDaysSchedule){
+                kieSession.insert(day);
+                kieSession.setGlobal("user", user);
+                kieSession.fireAllRules();
+        }
+        kieSession.dispose();
         return newDaysSchedule;
     }
 }
