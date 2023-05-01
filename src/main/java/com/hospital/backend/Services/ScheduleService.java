@@ -112,9 +112,10 @@ public class ScheduleService implements IScheduleService{
 
         for(Day day : newDaysSchedule){
                 kieSession.insert(day);
-                kieSession.setGlobal("user", user);
-                kieSession.fireAllRules();
+
         }
+        kieSession.setGlobal("user", user);
+        kieSession.fireAllRules();
         kieSession.dispose();
         return newDaysSchedule;
     }
