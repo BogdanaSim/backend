@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "Schedule")
+@Table(name = "Schedules")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

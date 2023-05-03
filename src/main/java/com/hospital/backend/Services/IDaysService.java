@@ -1,8 +1,11 @@
 package com.hospital.backend.Services;
 
 import com.hospital.backend.Models.Day;
+import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Models.UserProfile;
+
+import java.util.List;
 
 public interface IDaysService {
     Day save(Day day);
@@ -13,5 +16,7 @@ public interface IDaysService {
     Day findById(Long id);
 
     Day update(Day day);
+
+    List<Day> findAllByScheduleId(Schedule schedule);
 
 }

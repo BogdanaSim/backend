@@ -7,7 +7,9 @@ import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.User;
 import com.hospital.backend.Repositories.DaysRepository;
 import com.hospital.backend.Repositories.SchedulesRepository;
+import com.hospital.backend.Repositories.ShiftsRepository;
 import com.hospital.backend.RulesConfig.DroolsBeanFactory;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
@@ -33,7 +35,7 @@ public class ScheduleService implements IScheduleService{
     private KieSession kieSession;
     private final SchedulesRepository schedulesRepository;
     private final DaysRepository daysRepository;
-
+    private final ShiftsRepository shiftsRepository;
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
 
@@ -91,6 +93,7 @@ public class ScheduleService implements IScheduleService{
        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 
+    @Transactional
     public List<Day> getNewDaysSchedule(Schedule schedule, User user) {
         List<Day> newDaysSchedule = new ArrayList<>();
         int year = schedule.getDate().getYear();
@@ -117,6 +120,12 @@ public class ScheduleService implements IScheduleService{
         kieSession.setGlobal("user", user);
         kieSession.fireAllRules();
         kieSession.dispose();
+//        for(Day day: newDaysSchedule){
+//            if(!day.getShifts().isEmpty())
+//                shiftsRepository.saveAll(day.getShifts());
+//            daysRepository.save(day);
+//        }
+        //daysRepository.saveAll(newDaysSchedule);
         return newDaysSchedule;
     }
 }

@@ -56,6 +56,11 @@ public class DaysService implements IDaysService {
         return daysRepository.save(day);
     }
 
+    @Override
+    public List<Day> findAllByScheduleId(Schedule schedule) {
+        return daysRepository.findDaysBySchedule(schedule);
+    }
+
 //    public List<Day> getNewDaysSchedule(Schedule schedule) {
 //        List<Day> newDaysSchedule = new ArrayList<>();
 //        int year = schedule.getDate().getYear();

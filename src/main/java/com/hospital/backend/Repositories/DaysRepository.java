@@ -17,4 +17,6 @@ public interface DaysRepository extends JpaRepository<Day, Long> {
 
     Optional<Day> findByDate(LocalDate date);
 
+    List<Day> findDaysBySchedule(Schedule schedule);
+
 }

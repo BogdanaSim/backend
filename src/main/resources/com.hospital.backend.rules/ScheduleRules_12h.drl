@@ -18,7 +18,13 @@ rule "Change Day"
     when
         $day: Day(date.getDayOfWeek() == DayOfWeek.MONDAY)
     then
-        $day.setShifts(List.of(new Shift(1L,"1",user,$day)));
+        Shift shift = new Shift();
+        shift.setDay($day);
+        shift.setType("1");
+        shift.setUser(user);
+//        $day.setShifts(List.of(new Shift(1L,"1",user,$day)));
+        $day.setShifts(List.of(shift));
+
 end
 
 //rule "Suggest Senior developer Role"
