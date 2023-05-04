@@ -32,6 +32,7 @@ public class UserConverter implements IConverter<User, UserDTO>{
         UserDTO userDTO = new UserDTO();
         if(user == null)
             return userDTO;
+        userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
         userDTO.setPassword(user.getPassword());
         userDTO.setFirstName(user.getFirstName());

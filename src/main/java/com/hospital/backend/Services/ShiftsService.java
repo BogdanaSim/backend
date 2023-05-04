@@ -2,8 +2,6 @@ package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.*;
 import com.hospital.backend.Models.Shift;
-import com.hospital.backend.Models.User;
-import com.hospital.backend.Models.UserProfile;
 import com.hospital.backend.Repositories.ShiftsRepository;
 import com.hospital.backend.Repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -34,8 +35,8 @@ public class ShiftsService implements IShiftsService {
     }
 
     @Override
-    public UserProfile findByUserId(Long id) {
-        return null;
+    public List<Shift> findByUserId(Long id) {
+        return shiftsRepository.findAllByUserId(id);
     }
 
     @Override
@@ -50,5 +51,15 @@ public class ShiftsService implements IShiftsService {
         logger.info("update: " + shift.getId());
         shiftsRepository.findById(shift.getId()).orElseThrow(ShiftNotFoundException::new);
         return shiftsRepository.save(shift);
+    }
+
+    @Override
+    public Optional<Shift> findByUserAndDay(Long userId, Long dayId) {
+        return this.shiftsRepository.findByUserIdAndDay_Id(userId,dayId);
+
+    }
+
+    public boolean isExistByUserAndDay(Long userId, Long dayId) {
+        return this.shiftsRepository.findByUserIdAndDay_Id(userId,dayId).isPresent();
     }
 }
