@@ -2,12 +2,16 @@ package com.hospital.backend.Controllers;
 
 import com.hospital.backend.Converters.ScheduleConverter;
 import com.hospital.backend.DTOs.ScheduleDTO;
+import com.hospital.backend.DTOs.ShiftDTO;
 import com.hospital.backend.Models.Schedule;
+import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Services.ScheduleService;
 import com.hospital.backend.Services.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin
@@ -40,5 +44,11 @@ public class SchedulesController {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         Schedule addedSchedule = scheduleService.save(schedule);
         return scheduleConverter.convertModelToDto(addedSchedule);
+    }
+
+    @GetMapping("/findScheduleById/{scheduleId}")
+    public ScheduleDTO findScheduleById(@PathVariable Long scheduleId) {
+        Schedule schedule = scheduleService.findById(scheduleId);
+        return scheduleConverter.convertModelToDto(schedule);
     }
 }

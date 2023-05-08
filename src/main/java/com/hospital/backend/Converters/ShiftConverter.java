@@ -32,6 +32,7 @@ public class ShiftConverter implements IConverter<Shift, ShiftDTO>{
         ShiftDTO shiftDTO = new ShiftDTO();
         if(shift == null)
             return shiftDTO;
+        shiftDTO.setId(shift.getId());
         shiftDTO.setType(shift.getType());
         shiftDTO.setUserId(shift.getUser().getId());
         shiftDTO.setDayId(shift.getDay().getId());

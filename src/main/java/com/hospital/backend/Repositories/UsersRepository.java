@@ -3,10 +3,12 @@ package com.hospital.backend.Repositories;
 import com.hospital.backend.Models.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
+@Repository
 public interface UsersRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);

@@ -6,11 +6,10 @@ import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Services.ShiftsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,5 +39,24 @@ public class ShiftsController {
     public boolean isExistByUserIdAndDayId(@PathVariable Long userId, @PathVariable Long dayId) {
         Optional<Shift> shift = shiftsService.findByUserAndDay(userId, dayId);
         return shift.isPresent();
+    }
+
+    @PostMapping("/addShift")
+    public ShiftDTO addShift(@RequestBody ShiftDTO shiftDTO) {
+        Shift shift = shiftConverter.convertDtoToModel(shiftDTO);
+        Shift addedShift = shiftsService.save(shift);
+        return shiftConverter.convertModelToDto(addedShift);
+    }
+
+    @PutMapping("/updateShift")
+    public ShiftDTO updateShift(@RequestBody ShiftDTO shiftDTO) {
+        Shift shift = shiftConverter.convertDtoToModel(shiftDTO);
+        Shift updatedShift = shiftsService.update(shift);
+        return shiftConverter.convertModelToDto(updatedShift);
+    }
+
+    @DeleteMapping("/deleteShift/{id}")
+    public void deleteShift(@PathVariable Long id) {
+        shiftsService.deleteById(id);
     }
 }

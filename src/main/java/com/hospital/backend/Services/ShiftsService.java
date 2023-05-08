@@ -30,8 +30,8 @@ public class ShiftsService implements IShiftsService {
     @Override
     public void deleteById(Long id) {
         logger.info("deleteById shifts: " + id);
-        usersRepository.findById(id).orElseThrow(ShiftNotFoundException::new);
-        usersRepository.deleteById(id);
+        shiftsRepository.findById(id).orElseThrow(ShiftNotFoundException::new);
+        shiftsRepository.deleteById(id);
     }
 
     @Override
