@@ -8,6 +8,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,12 +58,8 @@ public class User {
     @JsonIgnore
     private List<Shift> shifts;
 
-    @OneToOne(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    },fetch = FetchType.LAZY)
-    @MapsId
-    @JoinColumn(name = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
     @ToString.Exclude
     @JsonIgnore
     private Department department;
@@ -83,4 +81,24 @@ public class User {
     public String toString() {
         return firstName + ' ' + lastName ;
     }
+    public int getNoHours(LocalDate startDate, LocalDate endDate){
+        List<Shift> shiftsUser = new ArrayList<>();
+        shiftsUser.addAll(shifts.stream().filter(item-> item.getDay().getDate().isAfter(startDate) && item.getDay().getDate().isBefore(endDate)).toList());
+
+        int noHours=0;
+        List<String> options12H = List.of(ShiftTypes.MORNING.getValue(),ShiftTypes.NIGHT.getValue());
+        List<String> options8H = List.of(ShiftTypes.SHORT.getValue());
+        List<String> optionsFree = List.of(ShiftTypes.SHORT.getValue());
+
+
+        for(Shift shift:shiftsUser){
+            if(options12H.contains(shift.getType())){
+                noHours+=12;
+            } else if (options8H.contains(shift.getType())) {
+                noHours+=8;
+            }
+        }
+        return noHours;
+    }
+
 }

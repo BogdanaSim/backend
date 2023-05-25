@@ -30,4 +30,9 @@ public class Department {
     @JsonIgnore
     private List<Schedule> schedules;
 
+    @OneToMany(mappedBy = "department", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<User> users;
+
 }

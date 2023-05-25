@@ -20,7 +20,7 @@ public class UsersController {
     private final UsersService usersService;
     private final UserConverter userConverter;
 
-    @GetMapping("getAllUsers")
+    @GetMapping("/getAllUsers")
     public List<UserDTO> findAllUsers() {
         List<User> users = usersService.getAllUsers();
         return userConverter.convertModelListToDtoList(users);
@@ -31,6 +31,11 @@ public class UsersController {
         User user = userConverter.convertDtoToModel(userDTO);
         User updatedUser = usersService.update(user);
         return userConverter.convertModelToDto(updatedUser);
+    }
+    @GetMapping("/findUserById/{userId}")
+    public UserDTO findUserById(@PathVariable Long userId) {
+        User user =usersService.findById(userId);
+        return userConverter.convertModelToDto(user);
     }
 
     @DeleteMapping("/deleteUser/{id}")

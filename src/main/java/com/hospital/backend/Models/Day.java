@@ -9,8 +9,9 @@ import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "days")
@@ -58,5 +59,181 @@ public class Day {
     public String toString() {
         return "Day{"  + date.getDayOfMonth() +
                 '}';
+    }
+    public boolean checkStatusDay(Map<String,Boolean> statusWeeks){
+        boolean result = false;
+        for (var entry : statusWeeks.entrySet()) {
+            List<String> dates = List.of(entry.getKey().split(";"));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+            LocalDate startDate = LocalDate.parse(dates.get(0), formatter);
+            LocalDate endDate = LocalDate.parse(dates.get(1), formatter);
+            if(date.isAfter(startDate) && date.isBefore(endDate))
+            {
+                result = entry.getValue();
+                break;
+            }
+        }
+        return result;
+    }
+
+    public void setNoShifts(Schedule newSchedule, List<User> users,int noMin,String value){
+        Random rand = new Random();
+        String str = this.schedule.getWeekByDay(this);
+        String sd = str.split(";")[0];
+        String ed=str.split(";")[1];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(sd,formatter);
+        LocalDate endDate = LocalDate.parse(ed,formatter);
+        while(getNoShifts(value)<noMin){
+            List<User> takenUsers =   shifts.stream().distinct()
+                    .map(Shift::getUser)
+                    .toList();//.stream().filter(user -> newSchedule.getNoHoursUser(user,startDate,endDate)+12>40).toList();
+            int minValue = users.stream()
+                    .mapToInt(item->newSchedule.getNoHoursUser(item,startDate,endDate))
+                    .min()
+                    .orElse(0);
+//            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 ).toList());
+            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 40 ).toList());
+
+            User randomUser = validUsers.get(rand.nextInt(validUsers.size()));
+
+
+            Shift newShift = new Shift();
+            newShift.setDay(this);
+            newShift.setUser(randomUser);
+            newShift.setType(value);
+            this.shifts.add(newShift);
+            List<Shift> userShifts = new ArrayList<>();
+            userShifts.add(newShift);
+            randomUser.setShifts(userShifts);
+            newSchedule.setSpecificDay(this);
+//            int index = users.indexOf(randomUser);
+//            users.set(index,randomUser);
+        }
+//        return users;
+    }
+
+    public List<Shift> setNightShifts(Schedule newSchedule, List<User> users,int noMin,String value, Day nextDay){
+        Random rand = new Random();
+        List<Shift> freeDays = new ArrayList<>();
+        String str = this.schedule.getWeekByDay(this);
+        String sd = str.split(";")[0];
+        String ed=str.split(";")[1];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(sd,formatter);
+        LocalDate endDate = LocalDate.parse(ed,formatter);
+        while(getNoShifts(value)<noMin){
+            List<User> takenUsers =   shifts.stream().distinct()
+                    .map(Shift::getUser)
+                    .toList();//.stream().filter(user -> newSchedule.getNoHoursUser(user,startDate,endDate)+12>40).toList();
+//            int minValue = users.stream()
+//                    .mapToInt(item->newSchedule.getNoHoursUser(item,startDate,endDate))
+//                    .min()
+//                    .orElse(0);
+//            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 && newSchedule.getNoHoursUser(item, startDate, endDate)==minValue).toList());
+            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 40).toList());
+
+            User randomUser = validUsers.get(rand.nextInt(validUsers.size()));
+
+            Shift newShift = new Shift();
+            newShift.setDay(this);
+            newShift.setUser(randomUser);
+            newShift.setType(value);
+            Shift freeShift = new Shift();
+            freeShift.setDay(nextDay);
+            freeShift.setUser(randomUser);
+            freeShift.setType(ShiftTypes.FREE.getValue());
+            this.shifts.add(newShift);
+            freeDays.add(freeShift);
+            newSchedule.setSpecificDay(this);
+//            List<Shift> userShifts = new ArrayList<>();
+//            userShifts.add(newShift);
+//            userShifts.add(freeShift);
+//            randomUser.setShifts(userShifts);
+//            int index = users.indexOf(randomUser);
+//            users.set(index,randomUser);
+
+        }
+//        Map<String, Object> result = new HashMap<>();
+//        result.put("freeDays", freeDays);
+//        result.put("users", users);
+        return freeDays;
+    }
+
+    public void setFreeShifts(List<Shift> nShifts){
+        for(Shift shift : nShifts){
+            Shift newShift = new Shift();
+            newShift.setDay(this);
+            newShift.setUser(shift.getUser());
+            newShift.setType(ShiftTypes.FREE.getValue());
+            this.shifts.add(newShift);
+        }
+    }
+
+    public void completeNoShifts(List<User> users,int noMin,String value){
+        Random rand = new Random();
+
+        while(getNoShifts(value)<noMin){
+            List<User> takenUsers =   shifts.stream().filter(item-> Objects.equals(item.getType(), value)).distinct()
+                    .map(Shift::getUser)
+                    .toList();
+            List<User> validUsers = users.stream().filter(item->!takenUsers.contains(item)).toList();
+            User randomUser = validUsers.get(rand.nextInt(validUsers.size()));
+            Shift newShift = new Shift();
+            newShift.setDay(this);
+            newShift.setUser(randomUser);
+            newShift.setType(value);
+            this.shifts.add(newShift);
+        }
+    }
+
+    public List<User> setShiftsUsers(List<User> users){
+        List<User> takenUsers =   shifts.stream().distinct()
+                .map(Shift::getUser)
+                .toList();
+        for(User user:users){
+            if(takenUsers.contains(user)){
+                List<Shift> shiftList = new ArrayList<>(shifts.stream().filter(item -> item.getUser() == user)
+                        .toList());
+                shiftList.addAll(user.getShifts());
+                user.setShifts(shiftList);
+            }
+        }
+        return users;
+    }
+
+    public int getNoShifts(String value){
+        return shifts.stream().filter(item -> Objects.equals(item.getType(), value)).toList().size();
+
+    }
+
+    public List<Shift> getTypeShifts(String type){
+        return shifts.stream().filter(item -> Objects.equals(item.getType(), type)).toList();
+
+    }
+
+    public Day setShiftsIfNotLast(Day day2, List<Shift> shiftList){
+        if(!this.checkIfLast()){
+            day2.setShifts(shiftList);
+        }
+        return day2;
+    }
+
+
+    public boolean isDayFilled(int noMinM, int noMinN,String valueM, String valueN){
+        return getNoShifts(valueM) >=noMinM && getNoShifts(valueN)>=noMinN;
+    }
+
+//    public boolean checkForUserShift(User user){
+//
+//    }
+
+    public boolean checkIfLast(){
+        LocalDate end = date.withDayOfMonth(date.getMonth().length(date.isLeapYear()));
+        return end == date;
+    }
+
+    public void removeFreeShifts(){
+        this.shifts= this.shifts.stream().filter(item-> !Objects.equals(item.getType(), ShiftTypes.FREE.getValue())).toList();
     }
 }

@@ -12,7 +12,9 @@ import com.hospital.backend.RulesConfig.DroolsBeanFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import org.kie.api.runtime.rule.FactHandle;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -93,6 +94,8 @@ public class ScheduleService implements IScheduleService{
        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 
+
+
     @Transactional
     public List<Day> getNewDaysSchedule(Schedule schedule, User user) {
         List<Day> newDaysSchedule = new ArrayList<>();
@@ -127,5 +130,66 @@ public class ScheduleService implements IScheduleService{
 //        }
         //daysRepository.saveAll(newDaysSchedule);
         return newDaysSchedule;
+    }
+
+
+    public List<Day> generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
+        List<Day> newDaysList = new ArrayList<>();
+        int year = schedule.getDate().getYear();
+        Month month = schedule.getDate().getMonth();
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstOfMonth = ym.atDay(1);
+        LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
+        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+        Schedule finalSchedule = schedule;
+        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
+            Day day = new Day();
+            day.setSchedule(finalSchedule);
+            day.setDate(date);
+            day.setShifts(new ArrayList<>());
+            newDaysList.add(day);
+
+
+        });
+        kieSession= new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h.drl"));
+
+        for(Day day : newDaysList){
+            kieSession.insert(day);
+
+        }
+        schedule.setDays(newDaysList);
+        kieSession.setGlobal("users", users);
+        kieSession.setGlobal("schedule",schedule);
+//        kieSession.setGlobal("days",newDaysList);
+//        kieSession.setGlobal("statusWeek",schedule.getWeeksAndStatus());
+//        kieSession.getAgenda().getAgendaGroup("Delete Shifts").setFocus();
+
+//        kieSession.getAgenda().getAgendaGroup("Generate Shifts").setFocus();
+//        kieSession.fireAllRules();
+
+
+
+        kieSession.fireAllRules();
+        kieSession.dispose();
+
+        kieSession= new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Short.drl"));
+        schedule.setDays(newDaysList);
+        for(User user: users){
+            kieSession.insert(user);
+        }
+        kieSession.setGlobal("schedule",schedule);
+        System.out.println(schedule.toString(users));
+        kieSession.fireAllRules();
+        kieSession.dispose();
+        Object newSchedule = kieSession.getGlobal("schedule");
+//
+//        schedule=(Schedule) newSchedule;
+//        for(Day day: newDaysSchedule){
+//            if(!day.getShifts().isEmpty())
+//                shiftsRepository.saveAll(day.getShifts());
+//            daysRepository.save(day);
+//        }
+        //daysRepository.saveAll(newDaysSchedule);
+        return schedule.getDays();
     }
 }

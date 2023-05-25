@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,5 +67,15 @@ public class UsersService implements IUsersService{
 
     public List<User> getAllUsers(){
         return usersRepository.findAll();
+    }
+
+    public List<User> getAllUsersWithoutShifts(){
+        List<User> allUsers = this.usersRepository.findAll();
+        List<User> users = new ArrayList<>();
+        for(User user:allUsers){
+            user.setShifts(new ArrayList<>());
+            users.add(user);
+        }
+        return users;
     }
 }

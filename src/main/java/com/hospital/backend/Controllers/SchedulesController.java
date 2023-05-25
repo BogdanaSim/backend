@@ -39,6 +39,14 @@ public class SchedulesController {
         return scheduleDTO;
     }
 
+    @PostMapping("/generateNew12hDaysSchedule")
+    public ScheduleDTO generateNew12hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
+        schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
+        System.out.println(schedule.toString(usersService.getAllUsers()));
+        return scheduleDTO;
+    }
+
     @PostMapping("/addSchedule")
     public ScheduleDTO addUser(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
