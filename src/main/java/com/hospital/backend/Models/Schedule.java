@@ -168,9 +168,6 @@ public class Schedule {
         List<Day> validDays = days.stream().filter(item->checkDateInterval(item.getDate(),startDate,endDate) && !item.getShifts().stream()
                 .map(Shift::getUser).distinct()
                 .toList().contains(user)).toList();
-        if(validDays.size()==0){
-            System.out.println(this.getNoHoursUser(user,startDate,endDate));
-        }
         return validDays.get(rand.nextInt(validDays.size()));
     }
 
