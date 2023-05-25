@@ -142,12 +142,13 @@ public class ScheduleService implements IScheduleService{
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
         // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         Schedule finalSchedule = schedule;
+        List<Day> finalNewDaysList = newDaysList;
         firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
             Day day = new Day();
             day.setSchedule(finalSchedule);
             day.setDate(date);
             day.setShifts(new ArrayList<>());
-            newDaysList.add(day);
+            finalNewDaysList.add(day);
 
 
         });
@@ -178,10 +179,19 @@ public class ScheduleService implements IScheduleService{
             kieSession.insert(user);
         }
         kieSession.setGlobal("schedule",schedule);
-        System.out.println(schedule.toString(users));
         kieSession.fireAllRules();
         kieSession.dispose();
-        Object newSchedule = kieSession.getGlobal("schedule");
+        Schedule newSchedule = (Schedule) kieSession.getGlobal("schedule");
+        kieSession= new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Free.drl"));
+        newDaysList=newSchedule.getDays();
+        for(Day day : newDaysList){
+            kieSession.insert(day);
+
+        }
+        kieSession.fireAllRules();
+        kieSession.dispose();
+        newSchedule.setDays(newDaysList);
+
 //
 //        schedule=(Schedule) newSchedule;
 //        for(Day day: newDaysSchedule){
@@ -190,6 +200,6 @@ public class ScheduleService implements IScheduleService{
 //            daysRepository.save(day);
 //        }
         //daysRepository.saveAll(newDaysSchedule);
-        return schedule.getDays();
+        return newSchedule.getDays();
     }
 }
