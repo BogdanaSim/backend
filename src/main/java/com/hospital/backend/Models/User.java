@@ -53,6 +53,9 @@ public class User {
     @NotNull
     private RoleUser roleUser;
 
+    @Column(name = "vacation_days")
+    private Integer vacationDays;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @ToString.Exclude
     @JsonIgnore
@@ -63,6 +66,11 @@ public class User {
     @ToString.Exclude
     @JsonIgnore
     private Department department;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<VacationRequest> vacationRequests;
 
     @Override
     public boolean equals(Object o) {

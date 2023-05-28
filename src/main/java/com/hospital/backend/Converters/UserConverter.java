@@ -24,6 +24,7 @@ public class UserConverter implements IConverter<User, UserDTO>{
         Department department = new Department();
         department.setId(userDTO.getDepartmentId());
         user.setDepartment(department);
+        user.setVacationDays(user.getVacationDays());
         return user;
     }
 
@@ -40,6 +41,7 @@ public class UserConverter implements IConverter<User, UserDTO>{
         userDTO.setRoleStaff(user.getRoleStaff().toString());
         userDTO.setRoleUser(user.getRoleUser().toString());
         userDTO.setDepartmentId(user.getDepartment().getId());
+        userDTO.setVacationDays(user.getVacationDays());
         return userDTO;
     }
 

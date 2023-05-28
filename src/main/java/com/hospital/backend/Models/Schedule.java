@@ -42,6 +42,8 @@ public class Schedule {
     @JsonIgnore
     private List<Day> days;
 
+
+
     public String toString(List<User> users) {
         List<String> strings = new java.util.ArrayList<>(days.stream()
                 .map(object -> Objects.toString(object, null))

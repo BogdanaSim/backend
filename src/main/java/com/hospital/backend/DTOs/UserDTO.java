@@ -35,7 +35,7 @@ public class UserDTO {
 
 
     private String roleUser;
-
+    private Integer vacationDays;
 
     private Long departmentId;
 }

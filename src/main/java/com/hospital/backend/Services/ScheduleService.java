@@ -2,12 +2,11 @@ package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Exceptions.ScheduleNotFoundException;
-import com.hospital.backend.Models.Day;
-import com.hospital.backend.Models.Schedule;
-import com.hospital.backend.Models.User;
+import com.hospital.backend.Models.*;
 import com.hospital.backend.Repositories.DaysRepository;
 import com.hospital.backend.Repositories.SchedulesRepository;
 import com.hospital.backend.Repositories.ShiftsRepository;
+import com.hospital.backend.Repositories.VacationRequestsRepository;
 import com.hospital.backend.RulesConfig.DroolsBeanFactory;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +25,18 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+
 import org.kie.api.runtime.rule.FactHandle;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class ScheduleService implements IScheduleService{
+public class ScheduleService implements IScheduleService {
 
 
     private KieSession kieSession;
     private final SchedulesRepository schedulesRepository;
     private final DaysRepository daysRepository;
+    private final VacationRequestsRepository vacationRequestsRepository;
     private final ShiftsRepository shiftsRepository;
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
@@ -70,30 +71,58 @@ public class ScheduleService implements IScheduleService{
         return schedulesRepository.save(schedule);
     }
 
-    public void addNewDaysSchedule(Schedule schedule){
+    public void addNewDaysSchedule(Schedule schedule) {
         int year = schedule.getDate().getYear();
         Month month = schedule.getDate().getMonth();
-        YearMonth ym = YearMonth.of(year,month);
+        YearMonth ym = YearMonth.of(year, month);
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-       // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
             Day day = new Day();
             day.setSchedule(schedule);
             day.setDate(date);
             Optional<Day> dayOptional = this.daysRepository.findByDate(date);
             dayOptional.ifPresent(value -> day.setId(value.getId()));
-            if(dayOptional.isEmpty()){
+            if (dayOptional.isEmpty()) {
                 daysRepository.save(day);
             }
 
         });
 
 
-       // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
-       // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
+        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
+        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 
+    public List<Day> getDaysWithVacationShifts(Schedule schedule, List<Day> days) {
+        int year = schedule.getDate().getYear();
+        Month month = schedule.getDate().getMonth();
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstOfMonth = ym.atDay(1);
+        LocalDate lastOfMonth = ym.atEndOfMonth();
+        List<VacationRequest> vacationRequests = vacationRequestsRepository.findRequestsWithinDateRange(firstOfMonth, lastOfMonth);
+        for (VacationRequest vacationRequest : vacationRequests) {
+            LocalDate overlappingStart = vacationRequest.getStartDate().isBefore(firstOfMonth) ? firstOfMonth : vacationRequest.getStartDate();
+            LocalDate overlappingEnd = vacationRequest.getEndDate().isAfter(lastOfMonth) ? lastOfMonth : vacationRequest.getEndDate();
+            days.stream()
+                    .filter(event -> (event.getDate().isEqual(overlappingStart) || event.getDate().isAfter(overlappingStart))
+                            && (event.getDate().isEqual(overlappingEnd) || event.getDate().isBefore(overlappingEnd)))
+                    .forEach(event ->
+                    {
+                        List<Shift> shifts = event.getShifts();
+                        Shift newShift = new Shift();
+                        newShift.setDay(event);
+                        newShift.setUser(vacationRequest.getUser());
+                        newShift.setType(vacationRequest.getType());
+                        shifts.add(newShift);
+                        event.setShifts(shifts);
+                    });
+
+        }
+
+        return days;
+    }
 
 
     @Transactional
@@ -114,10 +143,10 @@ public class ScheduleService implements IScheduleService{
 
 
         });
-        kieSession= new DroolsBeanFactory().getKieSession();
+        kieSession = new DroolsBeanFactory().getKieSession();
 
-        for(Day day : newDaysSchedule){
-                kieSession.insert(day);
+        for (Day day : newDaysSchedule) {
+            kieSession.insert(day);
 
         }
         kieSession.setGlobal("user", user);
@@ -152,15 +181,15 @@ public class ScheduleService implements IScheduleService{
 
 
         });
-        kieSession= new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h.drl"));
-
-        for(Day day : newDaysList){
+        kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h.drl"));
+//        newDaysList = getDaysWithVacationShifts(schedule,newDaysList);
+        for (Day day : newDaysList) {
             kieSession.insert(day);
 
         }
         schedule.setDays(newDaysList);
         kieSession.setGlobal("users", users);
-        kieSession.setGlobal("schedule",schedule);
+        kieSession.setGlobal("schedule", schedule);
 //        kieSession.setGlobal("days",newDaysList);
 //        kieSession.setGlobal("statusWeek",schedule.getWeeksAndStatus());
 //        kieSession.getAgenda().getAgendaGroup("Delete Shifts").setFocus();
@@ -169,22 +198,21 @@ public class ScheduleService implements IScheduleService{
 //        kieSession.fireAllRules();
 
 
-
         kieSession.fireAllRules();
         kieSession.dispose();
 
-        kieSession= new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Short.drl"));
+        kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Short.drl"));
         schedule.setDays(newDaysList);
-        for(User user: users){
+        for (User user : users) {
             kieSession.insert(user);
         }
-        kieSession.setGlobal("schedule",schedule);
+        kieSession.setGlobal("schedule", schedule);
         kieSession.fireAllRules();
         kieSession.dispose();
         Schedule newSchedule = (Schedule) kieSession.getGlobal("schedule");
-        kieSession= new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Free.drl"));
-        newDaysList=newSchedule.getDays();
-        for(Day day : newDaysList){
+        kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Free.drl"));
+        newDaysList = newSchedule.getDays();
+        for (Day day : newDaysList) {
             kieSession.insert(day);
 
         }
