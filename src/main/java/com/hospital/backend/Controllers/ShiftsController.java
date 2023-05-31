@@ -59,4 +59,10 @@ public class ShiftsController {
     public void deleteShift(@PathVariable Long id) {
         shiftsService.deleteById(id);
     }
+
+    @GetMapping("/findByUserAndSchedule/{userId}/{scheduleId}")
+    public List<ShiftDTO> findByUserAndSchedule(@PathVariable Long userId, @PathVariable Long scheduleId) {
+        List<Shift> shifts = shiftsService.findByUserAndSchedule(userId,scheduleId);
+        return shiftConverter.convertModelListToDtoList(shifts);
+    }
 }

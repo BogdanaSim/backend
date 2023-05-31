@@ -1,6 +1,7 @@
 package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.*;
+import com.hospital.backend.Models.RoleStaff;
 import com.hospital.backend.Models.User;
 import com.hospital.backend.Repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
@@ -71,6 +72,17 @@ public class UsersService implements IUsersService{
 
     public List<User> getAllUsersWithoutShifts(){
         List<User> allUsers = this.usersRepository.findAll();
+        List<User> users = new ArrayList<>();
+        for(User user:allUsers){
+            user.setShifts(new ArrayList<>());
+            users.add(user);
+        }
+        return users;
+    }
+
+    public List<User> getUsersWithRoleWithoutShifts(String role){
+        RoleStaff roleStaff = RoleStaff.valueOf(role);
+        List<User> allUsers = this.usersRepository.findByRoleStaff(roleStaff);
         List<User> users = new ArrayList<>();
         for(User user:allUsers){
             user.setShifts(new ArrayList<>());

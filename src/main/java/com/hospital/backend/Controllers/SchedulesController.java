@@ -1,8 +1,11 @@
 package com.hospital.backend.Controllers;
 
+import com.hospital.backend.Converters.DepartmentConverter;
 import com.hospital.backend.Converters.ScheduleConverter;
 import com.hospital.backend.DTOs.ScheduleDTO;
 import com.hospital.backend.DTOs.ShiftDTO;
+import com.hospital.backend.Exceptions.InvalidSolutionException;
+import com.hospital.backend.Models.Department;
 import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Services.ScheduleService;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,6 +27,8 @@ public class SchedulesController {
     private final UsersService usersService;
 
     private final ScheduleConverter scheduleConverter;
+
+    private final DepartmentConverter departmentConverter;
 
     @PostMapping("/addNewDaysSchedule")
     public ScheduleDTO addNewDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
@@ -42,7 +48,18 @@ public class SchedulesController {
     @PostMapping("/generateNew12hDaysSchedule")
     public ScheduleDTO generateNew12hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
+//        while (true){
+//            try{
+//                schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
+//                break;
+//            } catch (InvalidSolutionException ex) {
+//                System.out.println("Invalid solution exception occurred: " + ex.getMessage());
+//            } catch (RuntimeException ex) {
+//                System.out.println("Exception occurred: " + ex.getMessage());
+//            }
+//        }
         schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
+
         System.out.println(schedule.toString(usersService.getAllUsers()));
         return scheduleDTO;
     }
@@ -59,4 +76,16 @@ public class SchedulesController {
         Schedule schedule = scheduleService.findById(scheduleId);
         return scheduleConverter.convertModelToDto(schedule);
     }
+
+    @GetMapping("/getDatesByDepartmentId/{departmentId}")
+    public List<LocalDate> getDatesByDepartmentId(@PathVariable Long departmentId) {
+        return scheduleService.getDatesByDepartment(departmentId);
+    }
+
+    @GetMapping("/findScheduleByDateAndDepartment/{date}/{departmentId}")
+    public ScheduleDTO findScheduleByDateAndDepartment(@PathVariable Long departmentId, @PathVariable LocalDate date){
+        Schedule schedule = scheduleService.findScheduleByDateAndDepartment(date,departmentId);
+        return scheduleConverter.convertModelToDto(schedule);
+    }
+
 }

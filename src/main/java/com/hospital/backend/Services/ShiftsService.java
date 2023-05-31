@@ -1,6 +1,7 @@
 package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.*;
+import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Repositories.ShiftsRepository;
 import com.hospital.backend.Repositories.UsersRepository;
@@ -61,5 +62,11 @@ public class ShiftsService implements IShiftsService {
 
     public boolean isExistByUserAndDay(Long userId, Long dayId) {
         return this.shiftsRepository.findByUserIdAndDay_Id(userId,dayId).isPresent();
+    }
+
+    public List<Shift> findByUserAndSchedule(Long userId, Long scheduleId){
+        Schedule schedule = new Schedule();
+        schedule.setId(scheduleId);
+        return this.shiftsRepository.findByUserIdAndDay_Schedule(userId,schedule);
     }
 }

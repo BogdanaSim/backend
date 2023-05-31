@@ -17,4 +17,5 @@ public class ScheduleDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private DepartmentDTO department;
+    private String roleStaff;
 }

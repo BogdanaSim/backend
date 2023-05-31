@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.sk.PrettyTable;
 
+import javax.validation.constraints.NotNull;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,7 +43,10 @@ public class Schedule {
     @JsonIgnore
     private List<Day> days;
 
-
+    @Column(name = "role_staff")
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private RoleStaff roleStaff;
 
     public String toString(List<User> users) {
         List<String> strings = new java.util.ArrayList<>(days.stream()
@@ -54,7 +58,7 @@ public class Schedule {
         for (User user : users) {
             List<Shift> shifts = new ArrayList<>();
             for (Day day : days) {
-                if (day.getShifts().stream().anyMatch(o -> o.getUser().getId().equals(user.getId()) )) {
+                if (day.getShifts().stream().anyMatch(o -> o.getUser().getId().equals(user.getId()))) {
                     shifts.add(day.getShifts().stream().filter(o -> o.getUser().getId().equals(user.getId())).findFirst().get());
                 } else {
                     if (day.getDate().getDayOfWeek() == DayOfWeek.SATURDAY || day.getDate().getDayOfWeek() == DayOfWeek.SUNDAY)
@@ -110,13 +114,13 @@ public class Schedule {
         int noHours=0;
         List<String> options12H = List.of(ShiftTypes.MORNING.getValue(),ShiftTypes.NIGHT.getValue());
         List<String> options8H = List.of(ShiftTypes.SHORT.getValue());
-        List<String> optionsFree = List.of(ShiftTypes.SHORT.getValue());
+        List<String> optionsFree = List.of(ShiftTypes.SICK_LEAVE.getValue(),ShiftTypes.REST_LEAVE.getValue());
 
 
         for(Shift shift:shiftsUser){
             if(options12H.contains(shift.getType())){
                 noHours+=12;
-            } else if (options8H.contains(shift.getType())) {
+            } else if (options8H.contains(shift.getType()) || optionsFree.contains(shift.getType())) {
                 noHours+=8;
             }
         }

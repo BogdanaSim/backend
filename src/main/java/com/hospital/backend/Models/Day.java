@@ -2,6 +2,7 @@ package com.hospital.backend.Models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.hospital.backend.Exceptions.InvalidSolutionException;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -95,6 +96,10 @@ public class Day {
 //            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 ).toList());
             List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 40 ).toList());
 
+            if(validUsers.isEmpty()) {
+                System.out.println("special");
+                return;
+            }
             User randomUser = validUsers.get(rand.nextInt(validUsers.size()));
 
 
@@ -235,5 +240,16 @@ public class Day {
 
     public void removeFreeShifts(){
         this.shifts= this.shifts.stream().filter(item-> !Objects.equals(item.getType(), ShiftTypes.FREE.getValue())).toList();
+    }
+
+    public void setFreeDays(List<Shift> shifts){
+        for (Shift shift : shifts) {
+            boolean exists = this.shifts.stream()
+                    .anyMatch(event -> event.getUser().equals(shift.getUser()));
+
+            if (!exists) {
+                this.shifts.add(shift);
+            }
+        }
     }
 }

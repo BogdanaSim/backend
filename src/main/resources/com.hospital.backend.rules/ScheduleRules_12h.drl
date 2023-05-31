@@ -16,6 +16,8 @@ global com.hospital.backend.Models.Schedule schedule;
 
 dialect  "mvel"
 
+dialect "java"
+
 declare enum DaysOfWeek
    SUN("Sunday"),MON("Monday"),TUE("Tuesday"),WED("Wednesday"),THU("Thursday"),FRI("Friday"),SAT("Saturday");
     fullName : String
@@ -63,8 +65,10 @@ lock-on-active
 //               $nextDay.setShifts(shiftList);
 //               schedule.setSpecificDay($nextDay);
 //               }
+//           $nextDay.setShifts(shiftList);
+
        if(!$day.checkIfLast()){
-           $nextDay.setShifts(shiftList);
+           $nextDay.setFreeDays(shiftList);
            schedule.setSpecificDay($nextDay);
            update($nextDay);
        }

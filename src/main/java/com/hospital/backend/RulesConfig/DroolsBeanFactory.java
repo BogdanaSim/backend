@@ -1,10 +1,13 @@
 package com.hospital.backend.RulesConfig;
 
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.*;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
 import org.kie.internal.io.ResourceFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -60,8 +63,13 @@ public class DroolsBeanFactory {
         KieModule kieModule = kb.getKieModule();
 
         KieContainer kContainer = kieServices.newKieContainer(kieModule.getReleaseId());
+        KieBaseConfiguration kieBaseConfig = kieServices.newKieBaseConfiguration();
 
-        return kContainer.newKieSession();
+// Modify the configuration as needed
+        kieBaseConfig.setProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME, "com.hospital.backend.RulesConfig.MyConsequenceExceptionHandler");
+
+// Create the KieSession with the modified configuration
+        return kContainer.newKieBase(kieBaseConfig).newKieSession();
     }
 
     public KieSession getKieSession(Resource dt) {
@@ -76,7 +84,15 @@ public class DroolsBeanFactory {
         ReleaseId krDefaultReleaseId = kieRepository.getDefaultReleaseId();
 
         KieContainer kieContainer = kieServices.newKieContainer(krDefaultReleaseId);
+        KieBaseConfiguration kieBaseConfig = kieServices.newKieBaseConfiguration();
 
-        return kieContainer.newKieSession();
+// Modify the configuration as needed
+        kieBaseConfig.setProperty(ConsequenceExceptionHandlerOption.PROPERTY_NAME, "com.hospital.backend.RulesConfig.MyConsequenceExceptionHandler");
+
+// Create the KieSession with the modified configuration
+
+        return kieContainer.newKieBase(kieBaseConfig).newKieSession();
+//        return kieContainer.newKieSession();
+
     }
 }

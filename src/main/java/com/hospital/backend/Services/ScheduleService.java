@@ -8,6 +8,7 @@ import com.hospital.backend.Repositories.SchedulesRepository;
 import com.hospital.backend.Repositories.ShiftsRepository;
 import com.hospital.backend.Repositories.VacationRequestsRepository;
 import com.hospital.backend.RulesConfig.DroolsBeanFactory;
+import com.hospital.backend.RulesConfig.MyConsequenceExceptionHandler;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.kie.api.runtime.KieContainer;
@@ -25,6 +26,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -182,7 +184,7 @@ public class ScheduleService implements IScheduleService {
 
         });
         kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h.drl"));
-//        newDaysList = getDaysWithVacationShifts(schedule,newDaysList);
+        newDaysList = getDaysWithVacationShifts(schedule,newDaysList);
         for (Day day : newDaysList) {
             kieSession.insert(day);
 
@@ -196,7 +198,6 @@ public class ScheduleService implements IScheduleService {
 
 //        kieSession.getAgenda().getAgendaGroup("Generate Shifts").setFocus();
 //        kieSession.fireAllRules();
-
 
         kieSession.fireAllRules();
         kieSession.dispose();
@@ -230,4 +231,22 @@ public class ScheduleService implements IScheduleService {
         //daysRepository.saveAll(newDaysSchedule);
         return newSchedule.getDays();
     }
+
+    public List<LocalDate> getDatesByDepartment(Long idDepartment) {
+        Department department=new Department();
+        department.setId(idDepartment);
+        List<Schedule> schedules = schedulesRepository.findScheduleByDepartment(department);
+
+        return schedules.stream()
+                .map(Schedule::getDate)
+                .collect(Collectors.toList());
+    }
+
+    public Schedule findScheduleByDateAndDepartment(LocalDate date, Long departmentId){
+        Department department = new Department();
+        department.setId(departmentId);
+        return schedulesRepository.findScheduleByDateAndDepartment(date,department).get();
+    }
+
+
 }
