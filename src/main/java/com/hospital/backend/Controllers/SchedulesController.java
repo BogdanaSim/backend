@@ -48,7 +48,9 @@ public class SchedulesController {
     @PostMapping("/generateNew12hDaysSchedule")
     public ScheduleDTO generateNew12hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
-//        while (true){
+        Schedule newSchedule = scheduleService.generateNew12hDaysSchedule(schedule,usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
+//        System.out.println(        newSchedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
+        //        while (true){
 //            try{
 //                schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
 //                break;
@@ -58,10 +60,10 @@ public class SchedulesController {
 //                System.out.println("Exception occurred: " + ex.getMessage());
 //            }
 //        }
-        schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
+//        schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
 
-        System.out.println(schedule.toString(usersService.getAllUsers()));
-        return scheduleDTO;
+//        System.out.println(schedule.toString(usersService.getAllUsers()));
+        return scheduleConverter.convertModelToDto(newSchedule);
     }
 
     @PostMapping("/addSchedule")
@@ -69,6 +71,11 @@ public class SchedulesController {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         Schedule addedSchedule = scheduleService.save(schedule);
         return scheduleConverter.convertModelToDto(addedSchedule);
+    }
+
+    @DeleteMapping("/deleteSchedule/{id}")
+    public void deleteShift(@PathVariable Long id) {
+        scheduleService.deleteById(id);
     }
 
     @GetMapping("/findScheduleById/{scheduleId}")

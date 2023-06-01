@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.sk.PrettyTable;
 
 import javax.validation.constraints.NotNull;
@@ -38,7 +39,7 @@ public class Schedule {
     @JsonIgnore
     private Department department;
 
-    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
     private List<Day> days;
@@ -47,6 +48,10 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     @NotNull
     private RoleStaff roleStaff;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private ScheduleStatus scheduleStatus;
 
     public String toString(List<User> users) {
         List<String> strings = new java.util.ArrayList<>(days.stream()
@@ -83,14 +88,16 @@ public class Schedule {
         Map<String,Boolean> result = new HashMap<>();
         LocalDate monthStart = date.withDayOfMonth(1);
         LocalDate monthEnd = date.withDayOfMonth(monthStart.lengthOfMonth());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // Find the Monday on/before the start of the month
         LocalDate startDate = monthStart.with(DayOfWeek.MONDAY);
-        if (startDate.isAfter(monthStart)) {
-            startDate = startDate.minusWeeks(1);
-        }
+        if (startDate.isBefore(monthStart)) {
+            LocalDate plus=startDate.plusWeeks(1).minusDays(1);
+            result.put(monthStart.format(formatter) + ";" + plus.format(formatter),false);
+            startDate = startDate.plusWeeks(1);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        }
 
         while (startDate.isBefore(monthEnd)) {
             LocalDate endDate = startDate.plusDays(6).isBefore(monthEnd) ? startDate.plusDays(6) : monthEnd;
@@ -174,6 +181,10 @@ public class Schedule {
         List<Day> validDays = days.stream().filter(item->checkDateInterval(item.getDate(),startDate,endDate) && !item.getShifts().stream()
                 .map(Shift::getUser).distinct()
                 .toList().contains(user)).toList();
+//        if(validDays.isEmpty())
+//            return new Day();
+
+
         return validDays.get(rand.nextInt(validDays.size()));
     }
 

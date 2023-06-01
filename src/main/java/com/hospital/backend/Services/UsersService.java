@@ -1,6 +1,7 @@
 package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.*;
+import com.hospital.backend.Models.Department;
 import com.hospital.backend.Models.RoleStaff;
 import com.hospital.backend.Models.User;
 import com.hospital.backend.Repositories.UsersRepository;
@@ -89,5 +90,12 @@ public class UsersService implements IUsersService{
             users.add(user);
         }
         return users;
+    }
+
+    public List<User> getUserByRoleAndDepartment(String role, Long idDepartment){
+        RoleStaff roleStaff = RoleStaff.valueOf(role);
+        Department department = new Department();
+        department.setId(idDepartment);
+        return usersRepository.findByRoleStaffAndDepartment(roleStaff,department);
     }
 }

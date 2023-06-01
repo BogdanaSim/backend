@@ -32,7 +32,7 @@ public class Day {
     @Column(name = "date")
     private LocalDate date;
 
-    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "day", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
     private List<Shift> shifts;

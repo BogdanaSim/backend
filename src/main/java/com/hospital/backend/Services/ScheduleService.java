@@ -164,7 +164,7 @@ public class ScheduleService implements IScheduleService {
     }
 
 
-    public List<Day> generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
+    public Schedule generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
         Month month = schedule.getDate().getMonth();
@@ -174,6 +174,7 @@ public class ScheduleService implements IScheduleService {
         // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         Schedule finalSchedule = schedule;
         List<Day> finalNewDaysList = newDaysList;
+        schedule.setScheduleStatus(ScheduleStatus.INVALID);
         firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
             Day day = new Day();
             day.setSchedule(finalSchedule);
@@ -222,14 +223,15 @@ public class ScheduleService implements IScheduleService {
         newSchedule.setDays(newDaysList);
 
 //
-//        schedule=(Schedule) newSchedule;
-//        for(Day day: newDaysSchedule){
+        schedule=newSchedule;
+//        for(Day day: schedule.getDays()){
 //            if(!day.getShifts().isEmpty())
 //                shiftsRepository.saveAll(day.getShifts());
 //            daysRepository.save(day);
 //        }
-        //daysRepository.saveAll(newDaysSchedule);
-        return newSchedule.getDays();
+//        daysRepository.saveAll(schedule.getDays());
+
+        return schedulesRepository.save(schedule);
     }
 
     public List<LocalDate> getDatesByDepartment(Long idDepartment) {

@@ -9,16 +9,17 @@ lock-on-active
     when $user : User(!schedule.checkForCompleteUser($user,40).isEmpty());
     then
     while(!schedule.checkForCompleteUser($user,40).isEmpty()){
-                Day day =  schedule.selectDayUser($user,schedule.checkForCompleteUser($user,40));
-                List shifts = day.getShifts();
-                Shift newShift = new Shift();
-                newShift.setDay(day);
-                newShift.setUser($user);
-                newShift.setType(ShiftTypes.SHORT.getValue());
-                shifts.add(newShift);
-                day.setShifts(shifts);
-                schedule.setSpecificDay(day);
-                drools.getKieRuntime().setGlobal("schedule", schedule);
+
+        Day day =  schedule.selectDayUser($user,schedule.checkForCompleteUser($user,40));
+        List shifts = day.getShifts();
+        Shift newShift = new Shift();
+        newShift.setDay(day);
+        newShift.setUser($user);
+        newShift.setType(ShiftTypes.SHORT.getValue());
+        shifts.add(newShift);
+        day.setShifts(shifts);
+        schedule.setSpecificDay(day);
+        drools.getKieRuntime().setGlobal("schedule", schedule);
     }
 
 

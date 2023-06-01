@@ -1,5 +1,6 @@
 package com.hospital.backend.Repositories;
 
+import com.hospital.backend.Models.Department;
 import com.hospital.backend.Models.RoleStaff;
 import com.hospital.backend.Models.User;
 import jakarta.transaction.Transactional;
@@ -21,4 +22,6 @@ public interface UsersRepository extends JpaRepository<User, Long> {
     void deleteById(Long id);
 
     void deleteByEmail(String email);
+
+    List<User> findByRoleStaffAndDepartment(RoleStaff roleStaff, Department department);
 }
