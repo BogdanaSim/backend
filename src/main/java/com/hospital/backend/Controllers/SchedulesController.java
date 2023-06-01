@@ -88,4 +88,9 @@ public class SchedulesController {
         return scheduleConverter.convertModelToDto(schedule);
     }
 
+    @GetMapping("/findScheduleByDateAndDepartmentAndRoleStaff/{date}/{departmentId}/{roleStaff}")
+    public ScheduleDTO findScheduleByDateAndDepartmentAndRoleStaff(@PathVariable Long departmentId, @PathVariable LocalDate date, @PathVariable String roleStaff){
+        Schedule schedule = scheduleService.findScheduleByDateAndDepartmentAndRoleStaff(date,departmentId,roleStaff);
+        return scheduleConverter.convertModelToDto(schedule);
+    }
 }

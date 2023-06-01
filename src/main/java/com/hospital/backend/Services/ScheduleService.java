@@ -247,6 +247,10 @@ public class ScheduleService implements IScheduleService {
         department.setId(departmentId);
         return schedulesRepository.findScheduleByDateAndDepartment(date,department).get();
     }
-
+    public Schedule findScheduleByDateAndDepartmentAndRoleStaff(LocalDate date, Long departmentId, String roleStaff){
+        Department department = new Department();
+        department.setId(departmentId);
+        return schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaff(date,department,RoleStaff.valueOf(roleStaff)).get();
+    }
 
 }
