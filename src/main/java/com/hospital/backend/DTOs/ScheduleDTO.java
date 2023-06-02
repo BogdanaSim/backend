@@ -18,4 +18,5 @@ public class ScheduleDTO {
     private LocalDate date;
     private DepartmentDTO department;
     private String roleStaff;
+    private String status;
 }

@@ -5,6 +5,7 @@ import com.hospital.backend.DTOs.ScheduleDTO;
 import com.hospital.backend.Models.Department;
 import com.hospital.backend.Models.RoleStaff;
 import com.hospital.backend.Models.Schedule;
+import com.hospital.backend.Models.ScheduleStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ScheduleConverter implements IConverter<Schedule, ScheduleDTO>{
             schedule.setId(scheduleDTO.getId());
         schedule.setDate(scheduleDTO.getDate());
         schedule.setRoleStaff(RoleStaff.valueOf(scheduleDTO.getRoleStaff()));
+        schedule.setScheduleStatus(ScheduleStatus.valueOf(scheduleDTO.getStatus()));
         Department department = new Department();
         department.setId(scheduleDTO.getDepartment().getId());
         department.setName(scheduleDTO.getDepartment().getName());
@@ -35,6 +37,7 @@ public class ScheduleConverter implements IConverter<Schedule, ScheduleDTO>{
         scheduleDTO.setId(schedule.getId());
         scheduleDTO.setDate(schedule.getDate());
         scheduleDTO.setRoleStaff(schedule.getRoleStaff().toString());
+        scheduleDTO.setStatus(schedule.getScheduleStatus().toString());
         departmentDTO.setId(schedule.getDepartment().getId());
         departmentDTO.setName(schedule.getDepartment().getName());
         scheduleDTO.setDepartment(departmentDTO);

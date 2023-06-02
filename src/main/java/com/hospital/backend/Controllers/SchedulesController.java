@@ -4,10 +4,12 @@ import com.hospital.backend.Converters.DepartmentConverter;
 import com.hospital.backend.Converters.ScheduleConverter;
 import com.hospital.backend.DTOs.ScheduleDTO;
 import com.hospital.backend.DTOs.ShiftDTO;
+import com.hospital.backend.DTOs.UserDTO;
 import com.hospital.backend.Exceptions.InvalidSolutionException;
 import com.hospital.backend.Models.Department;
 import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.Shift;
+import com.hospital.backend.Models.User;
 import com.hospital.backend.Services.ScheduleService;
 import com.hospital.backend.Services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -72,7 +74,12 @@ public class SchedulesController {
         Schedule addedSchedule = scheduleService.save(schedule);
         return scheduleConverter.convertModelToDto(addedSchedule);
     }
-
+    @PutMapping("/updateSchedule")
+    public ScheduleDTO updateSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
+        Schedule addedSchedule = scheduleService.update(schedule);
+        return scheduleConverter.convertModelToDto(addedSchedule);
+    }
     @DeleteMapping("/deleteSchedule/{id}")
     public void deleteShift(@PathVariable Long id) {
         scheduleService.deleteById(id);
@@ -98,6 +105,12 @@ public class SchedulesController {
     @GetMapping("/findScheduleByDateAndDepartmentAndRoleStaff/{date}/{departmentId}/{roleStaff}")
     public ScheduleDTO findScheduleByDateAndDepartmentAndRoleStaff(@PathVariable Long departmentId, @PathVariable LocalDate date, @PathVariable String roleStaff){
         Schedule schedule = scheduleService.findScheduleByDateAndDepartmentAndRoleStaff(date,departmentId,roleStaff);
+        return scheduleConverter.convertModelToDto(schedule);
+    }
+
+    @GetMapping("/findScheduleByDateAndDepartmentAndRoleStaffAndScheduleStatus/{date}/{departmentId}/{roleStaff}/{scheduleStatus}")
+    public ScheduleDTO findScheduleByDateAndDepartmentAndRoleStaffAndScheduleStatus(@PathVariable Long departmentId, @PathVariable LocalDate date, @PathVariable String roleStaff, @PathVariable String scheduleStatus){
+        Schedule schedule = scheduleService.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(date,departmentId,roleStaff,scheduleStatus);
         return scheduleConverter.convertModelToDto(schedule);
     }
 }

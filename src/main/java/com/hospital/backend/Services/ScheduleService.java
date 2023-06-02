@@ -69,7 +69,9 @@ public class ScheduleService implements IScheduleService {
     @Override
     public Schedule update(Schedule schedule) {
         logger.info("update schedule: " + schedule.getId());
-        schedulesRepository.findById(schedule.getId()).orElseThrow(ScheduleNotFoundException::new);
+        Schedule sc = schedulesRepository.findById(schedule.getId()).orElseThrow(ScheduleNotFoundException::new);
+        if(schedule.getDays()==null)
+            schedule.setDays(sc.getDays());
         return schedulesRepository.save(schedule);
     }
 
@@ -253,6 +255,16 @@ public class ScheduleService implements IScheduleService {
         Department department = new Department();
         department.setId(departmentId);
         return schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaff(date,department,RoleStaff.valueOf(roleStaff)).get();
+    }
+
+    public Schedule findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date,  Long departmentId, String roleStaff, String scheduleStatus){
+        Department department = new Department();
+        department.setId(departmentId);
+        Optional<Schedule> schedule = schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(date,department,RoleStaff.valueOf(roleStaff),ScheduleStatus.valueOf(scheduleStatus));
+        if(schedule.isEmpty()){
+            throw new ScheduleNotFoundException();
+        }
+        return schedule.get();
     }
 
 }
