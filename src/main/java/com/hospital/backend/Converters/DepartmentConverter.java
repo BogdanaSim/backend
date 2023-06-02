@@ -25,7 +25,7 @@ public class DepartmentConverter implements IConverter<Department, DepartmentDTO
     @Override
     public DepartmentDTO convertModelToDto(Department department) {
         DepartmentDTO departmentDTO = new DepartmentDTO();
-        if(department == null)
+        if(department.getId() == null)
             return departmentDTO;
         departmentDTO.setId(department.getId());
         departmentDTO.setName(department.getName());

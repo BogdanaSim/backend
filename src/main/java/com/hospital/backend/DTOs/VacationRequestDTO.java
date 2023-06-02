@@ -27,5 +27,5 @@ public class VacationRequestDTO {
 
     private String status;
 
-    private Long userId;
+    private UserDTO userDTO;
 }

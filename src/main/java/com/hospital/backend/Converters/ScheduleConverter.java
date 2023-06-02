@@ -32,7 +32,7 @@ public class ScheduleConverter implements IConverter<Schedule, ScheduleDTO>{
     public ScheduleDTO convertModelToDto(Schedule schedule) {
         ScheduleDTO scheduleDTO = new ScheduleDTO();
         DepartmentDTO departmentDTO=new DepartmentDTO();
-        if(schedule == null)
+        if(schedule.getId() == null)
             return scheduleDTO;
         scheduleDTO.setId(schedule.getId());
         scheduleDTO.setDate(schedule.getDate());

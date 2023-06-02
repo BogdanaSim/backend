@@ -26,7 +26,7 @@ public class DayConverter implements IConverter<Day, DayDTO>{
     @Override
     public DayDTO convertModelToDto(Day day) {
         DayDTO dayDTO = new DayDTO();
-        if(day == null)
+        if(day.getId() == null)
             return dayDTO;
         dayDTO.setId(day.getId());
         dayDTO.setDate(day.getDate());

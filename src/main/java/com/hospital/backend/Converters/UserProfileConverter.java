@@ -25,7 +25,7 @@ public class UserProfileConverter  implements IConverter<UserProfile, UserProfil
     @Override
     public UserProfileDTO convertModelToDto(UserProfile userProfile) {
         UserProfileDTO userDTO = new UserProfileDTO();
-        if(userProfile == null)
+        if(userProfile.getId() == null)
             return userDTO;
         userDTO.setId(userProfile.getId());
         userDTO.setDetails(userDTO.getDetails());

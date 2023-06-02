@@ -167,6 +167,9 @@ public class ScheduleService implements IScheduleService {
 
 
     public Schedule generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
+        if(schedule.getId()!=null){
+            daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+        }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
         Month month = schedule.getDate().getMonth();
@@ -232,14 +235,19 @@ public class ScheduleService implements IScheduleService {
 //            daysRepository.save(day);
 //        }
 //        daysRepository.saveAll(schedule.getDays());
+        if(schedule.getId()!=null) {
 
+            daysRepository.saveAll(schedule.getDays());
+            return schedule;
+
+        }
         return schedulesRepository.save(schedule);
     }
 
     public List<LocalDate> getDatesByDepartment(Long idDepartment) {
         Department department=new Department();
         department.setId(idDepartment);
-        List<Schedule> schedules = schedulesRepository.findScheduleByDepartment(department);
+        List<Schedule> schedules = schedulesRepository.findByDepartmentAndScheduleStatus(department,ScheduleStatus.VALID);
 
         return schedules.stream()
                 .map(Schedule::getDate)
@@ -261,10 +269,15 @@ public class ScheduleService implements IScheduleService {
         Department department = new Department();
         department.setId(departmentId);
         Optional<Schedule> schedule = schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(date,department,RoleStaff.valueOf(roleStaff),ScheduleStatus.valueOf(scheduleStatus));
-        if(schedule.isEmpty()){
-            throw new ScheduleNotFoundException();
-        }
-        return schedule.get();
+        return schedule.orElseGet(Schedule::new);
     }
-
+    public boolean isPresentSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date,  Long departmentId, String roleStaff, String scheduleStatus){
+        Department department = new Department();
+        department.setId(departmentId);
+        Optional<Schedule> schedule = schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(date,department,RoleStaff.valueOf(roleStaff),ScheduleStatus.valueOf(scheduleStatus));
+        if(schedule.isEmpty()){
+            return false;
+        }
+        return true;
+    }
 }

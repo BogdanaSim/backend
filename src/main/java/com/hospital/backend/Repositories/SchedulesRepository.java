@@ -16,6 +16,7 @@ public interface SchedulesRepository extends JpaRepository<Schedule,Long> {
     Boolean existsByDate(LocalDate date);
     Optional<Schedule> findByDate(LocalDate date);
     List<Schedule> findScheduleByDepartment(Department department);
+    List<Schedule> findByDepartmentAndScheduleStatus(Department department, ScheduleStatus scheduleStatus);
     Optional<Schedule> findScheduleByDateAndDepartment(LocalDate date, Department department);
     Optional<Schedule> findSchedulesByDateAndDepartmentAndRoleStaff(LocalDate date, Department department, RoleStaff roleStaff);
     Optional<Schedule> findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date, Department department, RoleStaff roleStaff, ScheduleStatus scheduleStatus);

@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
 public class Day {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,8 +57,11 @@ public class Day {
 
     @Override
     public String toString() {
-        return "Day{"  + date.getDayOfMonth() +
-                '}';
+        if (date != null) {
+            return "Day{" + date.getDayOfMonth() + '}';
+        } else {
+            return "Day{date=null}";
+        }
     }
     public boolean checkStatusDay(Map<String,Boolean> statusWeeks){
         boolean result = false;

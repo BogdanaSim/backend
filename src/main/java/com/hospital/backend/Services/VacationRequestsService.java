@@ -2,6 +2,8 @@ package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Exceptions.VacationRequestNotFoundException;
+import com.hospital.backend.Models.Department;
+import com.hospital.backend.Models.StatusRequest;
 import com.hospital.backend.Models.VacationRequest;
 import com.hospital.backend.Repositories.VacationRequestsRepository;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,11 @@ public class VacationRequestsService implements IVacationRequestsService{
     @Override
     public List<VacationRequest> findRequestsWithinDateRange(LocalDate start, LocalDate end) {
         return vacationRequestsRepository.findRequestsWithinDateRange(start,end);
+    }
+
+    public List<VacationRequest> findByStatusAndUserDepartment(String status,Long departmentId){
+        Department department = new Department();
+        department.setId(departmentId);
+        return vacationRequestsRepository.findByStatusAndUserDepartment(StatusRequest.valueOf(status),department);
     }
 }

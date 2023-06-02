@@ -30,7 +30,7 @@ public class ShiftConverter implements IConverter<Shift, ShiftDTO>{
     @Override
     public ShiftDTO convertModelToDto(Shift shift) {
         ShiftDTO shiftDTO = new ShiftDTO();
-        if(shift == null)
+        if(shift.getId() == null)
             return shiftDTO;
         shiftDTO.setId(shift.getId());
         shiftDTO.setType(shift.getType());

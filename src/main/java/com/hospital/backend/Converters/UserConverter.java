@@ -31,7 +31,7 @@ public class UserConverter implements IConverter<User, UserDTO>{
     @Override
     public UserDTO convertModelToDto(User user) {
         UserDTO userDTO = new UserDTO();
-        if(user == null)
+        if(user.getId() == null)
             return userDTO;
         userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
