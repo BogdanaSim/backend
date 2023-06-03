@@ -3,6 +3,7 @@ package com.hospital.backend.Services;
 import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Exceptions.VacationRequestNotFoundException;
 import com.hospital.backend.Models.Department;
+import com.hospital.backend.Models.RoleStaff;
 import com.hospital.backend.Models.StatusRequest;
 import com.hospital.backend.Models.VacationRequest;
 import com.hospital.backend.Repositories.VacationRequestsRepository;
@@ -53,10 +54,21 @@ public class VacationRequestsService implements IVacationRequestsService{
     public List<VacationRequest> findRequestsWithinDateRange(LocalDate start, LocalDate end) {
         return vacationRequestsRepository.findRequestsWithinDateRange(start,end);
     }
+    public List<VacationRequest> findIntersectingRequests(LocalDate start, LocalDate end,String role, Long departmentId,String status) {
+        return vacationRequestsRepository.findIntersectingRequests(start,end, RoleStaff.valueOf(role),departmentId,StatusRequest.valueOf(status));
+    }
 
     public List<VacationRequest> findByStatusAndUserDepartment(String status,Long departmentId){
         Department department = new Department();
         department.setId(departmentId);
         return vacationRequestsRepository.findByStatusAndUserDepartment(StatusRequest.valueOf(status),department);
+    }
+
+    public Integer findSizeIntersectingRequests(LocalDate start, LocalDate end,String role, Long departmentId,String status) {
+        return vacationRequestsRepository.findIntersectingRequests(start,end, RoleStaff.valueOf(role),departmentId,StatusRequest.valueOf(status)).size();
+    }
+
+    public List<VacationRequest> findAll(){
+        return this.vacationRequestsRepository.findAll();
     }
 }

@@ -2,17 +2,17 @@ package com.hospital.backend.Controllers;
 
 import com.hospital.backend.Converters.VacationRequestConverter;
 import com.hospital.backend.DTOs.DayDTO;
+import com.hospital.backend.DTOs.ScheduleDTO;
+import com.hospital.backend.DTOs.UserDTO;
 import com.hospital.backend.DTOs.VacationRequestDTO;
 import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
+import com.hospital.backend.Models.User;
 import com.hospital.backend.Models.VacationRequest;
 import com.hospital.backend.Services.VacationRequestsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,12 +33,39 @@ public class VacationRequestsController {
         return vacationRequestConverter.convertModelListToDtoList(vacationRequests);
 
     }
+    @GetMapping("/findIntersectingRequests/{start}/{end}/{role}/{departmentId}/{status}")
+    public List<VacationRequestDTO> findIntersectingRequests(@PathVariable LocalDate start, @PathVariable LocalDate end, @PathVariable Long departmentId, @PathVariable String role, @PathVariable String status) {
+        List<VacationRequest> vacationRequests = vacationRequestsService.findIntersectingRequests(start,end,role,departmentId,status);
+        return vacationRequestConverter.convertModelListToDtoList(vacationRequests);
+
+    }
+
+    @GetMapping("/findIntersectingRequestsSize/{start}/{end}/{role}/{departmentId}/{status}")
+    public Integer findIntersectingRequestsSize(@PathVariable LocalDate start, @PathVariable LocalDate end, @PathVariable Long departmentId, @PathVariable String role, @PathVariable String status) {
+        return vacationRequestsService.findSizeIntersectingRequests(start,end,role,departmentId,status);
+
+    }
+
     @GetMapping("/findByStatusAndUserDepartment/{status}/{departmentId}")
     public List<VacationRequestDTO> findByStatusAndUserDepartment(@PathVariable Long departmentId, @PathVariable String status) {
 
         List<VacationRequest> vacationRequests = vacationRequestsService.findByStatusAndUserDepartment(status,departmentId);
         return vacationRequestConverter.convertModelListToDtoList(vacationRequests);
 
+    }
+
+    @PutMapping("/updateRequest")
+    public VacationRequestDTO updateRequest(@RequestBody VacationRequestDTO vacationRequestDTO) {
+        VacationRequest vacationRequest = vacationRequestConverter.convertDtoToModel(vacationRequestDTO);
+        VacationRequest vacationRequest1 = vacationRequestsService.update(vacationRequest);
+        return vacationRequestConverter.convertModelToDto(vacationRequest1);
+    }
+
+    @PostMapping("/addRequest")
+    public VacationRequestDTO addRequest(@RequestBody VacationRequestDTO vacationRequestDTO) {
+        VacationRequest vacationRequest = vacationRequestConverter.convertDtoToModel(vacationRequestDTO);
+        VacationRequest vacationRequest1 = vacationRequestsService.save(vacationRequest);
+        return vacationRequestConverter.convertModelToDto(vacationRequest1);
     }
 
 }

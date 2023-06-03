@@ -18,4 +18,10 @@ public interface VacationRequestsRepository extends JpaRepository<VacationReques
 
     List<VacationRequest> findByStatusAndUserDepartment(StatusRequest status, Department user_department);
 
+    @Query("SELECT e FROM VacationRequest e WHERE ((e.startDate <= :endDate AND e.endDate >= :startDate) OR (:startDate <= e.endDate AND :endDate >= e.startDate)  OR (e.startDate >= :startDate AND e.endDate <= :endDate) OR ( :startDate >=e.startDate AND :endDate <= e.endDate)) AND e.status = :statusRequest AND e.user.roleStaff = :role AND e.user.department.id = :departmentId")
+    List<VacationRequest> findIntersectingRequests(LocalDate startDate, LocalDate endDate, RoleStaff role, Long departmentId, StatusRequest statusRequest);
+
+
+
+
 }
