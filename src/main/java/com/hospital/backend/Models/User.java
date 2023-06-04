@@ -2,12 +2,12 @@ package com.hospital.backend.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,6 +107,18 @@ public class User {
             }
         }
         return noHours;
+    }
+
+    public User(String email, String password,String roleStaff,String firstName,String lastName) {
+        this.email = email;
+        this.password = password;
+        this.vacationDays=21;
+        this.roleUser=RoleUser.USER;
+        this.firstName=firstName;
+        this.lastName=lastName;
+        this.roleStaff=RoleStaff.valueOf(roleStaff);
+        this.department=new Department();
+        this.department.setId(1L);
     }
 
 }
