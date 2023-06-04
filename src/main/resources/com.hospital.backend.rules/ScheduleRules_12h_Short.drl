@@ -5,22 +5,100 @@ import java.util.List;
 global com.hospital.backend.Models.Schedule schedule;
 
 rule "Complete shifts"
+salience 10
 lock-on-active
-    when $user : User(!schedule.checkForCompleteUser($user,40).isEmpty());
-    then
-    while(!schedule.checkForCompleteUser($user,40).isEmpty()){
 
-        Day day =  schedule.selectDayUser($user,schedule.checkForCompleteUser($user,40));
-        List shifts = day.getShifts();
-        Shift newShift = new Shift();
-        newShift.setDay(day);
-        newShift.setUser($user);
-        newShift.setType(ShiftTypes.SHORT.getValue());
-        shifts.add(newShift);
-        day.setShifts(shifts);
-        schedule.setSpecificDay(day);
-        drools.getKieRuntime().setGlobal("schedule", schedule);
-    }
+    when $user : User((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8));
+    then
+        while(schedule.getNoHoursMonth($user)+8<=schedule.getNoWorkingDays()*8){
+
+            Day day =  schedule.selectForCompleteMonth($user);
+            List shifts = day.getShifts();
+            Shift newShift = new Shift();
+            newShift.setDay(day);
+            newShift.setUser($user);
+            newShift.setType(ShiftTypes.SHORT.getValue());
+            shifts.add(newShift);
+            day.setShifts(shifts);
+            schedule.setSpecificDay(day);
+            drools.getKieRuntime().setGlobal("schedule", schedule);
+        }
 
 
 end
+//rule "Replace shifts 3"
+//salience 5
+//lock-on-active
+//
+//    when $user : User(schedule.getNoHoursMonth($user)<(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%(12-8)==0);
+//    then
+//        while(schedule.getNoHoursMonth($user)<schedule.getNoWorkingDays()*8){
+//
+//            if(schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue()).isDateValid()){
+//            Day day =  schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue());
+//            schedule.setSpecificDay(day);
+//
+//            }
+//            else{
+//                Day day1 =schedule.getDayWithoutUser($user);
+//                List shifts = day1.getShifts();
+//                Shift newShift = new Shift();
+//                newShift.setDay(day1);
+//                newShift.setUser($user);
+//                newShift.setType(ShiftTypes.SHORT.getValue());
+//                shifts.add(newShift);
+//                day1.setShifts(shifts);
+//                schedule.setSpecificDay(day1);
+//
+//
+//            }
+//         drools.getKieRuntime().setGlobal("schedule", schedule);
+//        }
+//
+//
+//end
+//
+//rule "Replace shifts 1"
+//salience 2
+//lock-on-active
+//
+//    when $user : User(schedule.getNoHoursMonth($user)<(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%12==0);
+//    then
+//        while(schedule.getNoHoursMonth($user)<schedule.getNoWorkingDays()*8){
+//                Day day =schedule.getDayWithoutUser($user);
+//                List shifts = day.getShifts();
+//                Shift newShift = new Shift();
+//                newShift.setDay(day);
+//                newShift.setUser($user);
+//                newShift.setType(ShiftTypes.MORNING.getValue());
+//                shifts.add(newShift);
+//                day.setShifts(shifts);
+//                schedule.setSpecificDay(day);
+//                drools.getKieRuntime().setGlobal("schedule", schedule);
+//        }
+//
+//
+//end
+//rule "Replace shifts 2"
+//salience 1
+//lock-on-active
+//
+//    when $user : User(schedule.getNoHoursMonth($user)<(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%8==0);
+//    then
+////        System.out.println(schedule.getNoHoursMonth($user) + $user.toString() +"<" +schedule.getNoWorkingDays()*8);
+//        while(schedule.getNoHoursMonth($user)<schedule.getNoWorkingDays()*8){
+//                Day day =schedule.getDayWithoutUser($user);
+//                List shifts = day.getShifts();
+//                Shift newShift = new Shift();
+//                newShift.setDay(day);
+//                newShift.setUser($user);
+//                newShift.setType(ShiftTypes.SHORT.getValue());
+//                shifts.add(newShift);
+//                day.setShifts(shifts);
+//                schedule.setSpecificDay(day);
+//                drools.getKieRuntime().setGlobal("schedule", schedule);
+//        }
+//
+//
+//end
+

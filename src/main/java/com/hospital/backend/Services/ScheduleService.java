@@ -235,13 +235,79 @@ public class ScheduleService implements IScheduleService {
 //            daysRepository.save(day);
 //        }
 //        daysRepository.saveAll(schedule.getDays());
-        if(schedule.getId()!=null) {
+//        if(schedule.getId()!=null) {
+//
+//            daysRepository.saveAll(schedule.getDays());
+//            return schedule;
+//
+//        }
+//        return schedulesRepository.save(schedule);
+        return schedule;
+    }
 
-            daysRepository.saveAll(schedule.getDays());
-            return schedule;
+
+
+    public Schedule generateNew8hDaysSchedule(Schedule schedule, List<User> users) {
+        if(schedule.getId()!=null){
+            daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+        }
+        List<Day> newDaysList = new ArrayList<>();
+        int year = schedule.getDate().getYear();
+        Month month = schedule.getDate().getMonth();
+        YearMonth ym = YearMonth.of(year, month);
+        LocalDate firstOfMonth = ym.atDay(1);
+        LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
+        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
+        Schedule finalSchedule = schedule;
+        List<Day> finalNewDaysList = newDaysList;
+        schedule.setScheduleStatus(ScheduleStatus.INVALID);
+        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
+            Day day = new Day();
+            day.setSchedule(finalSchedule);
+            day.setDate(date);
+            day.setShifts(new ArrayList<>());
+            finalNewDaysList.add(day);
+
+
+        });
+        kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_8h.drl"));
+        newDaysList = getDaysWithVacationShifts(schedule,newDaysList);
+        for (Day day : newDaysList) {
+            kieSession.insert(day);
 
         }
-        return schedulesRepository.save(schedule);
+        schedule.setDays(newDaysList);
+        kieSession.setGlobal("users", users);
+        kieSession.setGlobal("schedule", schedule);
+//        kieSession.setGlobal("days",newDaysList);
+//        kieSession.setGlobal("statusWeek",schedule.getWeeksAndStatus());
+//        kieSession.getAgenda().getAgendaGroup("Delete Shifts").setFocus();
+
+//        kieSession.getAgenda().getAgendaGroup("Generate Shifts").setFocus();
+//        kieSession.fireAllRules();
+
+        kieSession.fireAllRules();
+        kieSession.dispose();
+        Schedule newSchedule = (Schedule) kieSession.getGlobal("schedule");
+        kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_8h_Free.drl"));
+        newDaysList = newSchedule.getDays();
+        for (Day day : newDaysList) {
+            kieSession.insert(day);
+
+        }
+        kieSession.fireAllRules();
+        kieSession.dispose();
+        newSchedule.setDays(newDaysList);
+        schedule=newSchedule;
+
+//        if(schedule.getId()!=null) {
+//
+//            daysRepository.saveAll(schedule.getDays());
+//            return schedule;
+//
+//        }
+//        return schedulesRepository.save(schedule);
+        return schedule;
     }
 
     public List<LocalDate> getDatesByDepartment(Long idDepartment) {

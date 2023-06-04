@@ -51,7 +51,7 @@ public class SchedulesController {
     public ScheduleDTO generateNew12hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         Schedule newSchedule = scheduleService.generateNew12hDaysSchedule(schedule,usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
-//        System.out.println(        newSchedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
+        System.out.println(        newSchedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
         //        while (true){
 //            try{
 //                schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
@@ -64,7 +64,15 @@ public class SchedulesController {
 //        }
 //        schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
 
-//        System.out.println(schedule.toString(usersService.getAllUsers()));
+//        System.out.println(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
+        return scheduleConverter.convertModelToDto(newSchedule);
+    }
+
+    @PostMapping("/generateNew8hDaysSchedule")
+    public ScheduleDTO generateNew8hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
+        Schedule newSchedule = scheduleService.generateNew8hDaysSchedule(schedule,usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
+        System.out.println(schedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
         return scheduleConverter.convertModelToDto(newSchedule);
     }
 
