@@ -24,7 +24,10 @@ public class UsersService implements IUsersService{
 
     @Override
     public User findByEmail(String email) {
-        return null;
+
+        logger.info("findByEmail: " + email);
+        return usersRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
+
     }
 
     @Override

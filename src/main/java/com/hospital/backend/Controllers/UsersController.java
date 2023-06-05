@@ -8,17 +8,21 @@ import com.hospital.backend.Models.User;
 import com.hospital.backend.Services.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UsersController {
 
     private final UsersService usersService;
     private final UserConverter userConverter;
+
 
     @GetMapping("/getAllUsers")
     public List<UserDTO> findAllUsers() {
@@ -41,6 +45,12 @@ public class UsersController {
     @GetMapping("/findUserById/{userId}")
     public UserDTO findUserById(@PathVariable Long userId) {
         User user =usersService.findById(userId);
+        return userConverter.convertModelToDto(user);
+    }
+
+    @GetMapping("/findUserByEmail/{email}")
+    public UserDTO findUserByEmail(@PathVariable String email) {
+        User user =usersService.findByEmail(email);
         return userConverter.convertModelToDto(user);
     }
 

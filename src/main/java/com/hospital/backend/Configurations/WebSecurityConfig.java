@@ -60,7 +60,10 @@ public class WebSecurityConfig {
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeHttpRequests().requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/test/**").permitAll()
+                .requestMatchers("/api/users/**").permitAll().requestMatchers("/api/departments/**").permitAll()
+                .requestMatchers("/api/profiles/**").permitAll() .requestMatchers("/api/days/**").permitAll()
+                .requestMatchers("/api/schedules/**").permitAll() .requestMatchers("/api/shifts/**").permitAll()
+                .requestMatchers("/api/requests/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

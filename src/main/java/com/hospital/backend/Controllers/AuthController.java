@@ -9,6 +9,8 @@ import com.hospital.backend.DTOs.UserInfoResponseDTO;
 import com.hospital.backend.Models.RoleStaff;
 import com.hospital.backend.Models.RoleUser;
 import com.hospital.backend.Models.User;
+import com.hospital.backend.Models.UserProfile;
+import com.hospital.backend.Repositories.UsersProfilesRepository;
 import com.hospital.backend.Repositories.UsersRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+//@CrossOrigin(origins = "*", maxAge = 3600)
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -36,6 +39,10 @@ public class AuthController {
 
     @Autowired
     UsersRepository usersRepository;
+
+    @Autowired
+    UsersProfilesRepository usersProfilesRepository;
+
 
 
     @Autowired
@@ -108,8 +115,10 @@ public class AuthController {
 //        }
 
         user.setRoleUser(RoleUser.USER);
-        usersRepository.save(user);
-
+        User user1 = usersRepository.save(user);
+        UserProfile userProfile = new UserProfile();
+        userProfile.setUser(user1);
+        usersProfilesRepository.save(userProfile);
         return ResponseEntity.ok(new MessageResponseDTO("User registered successfully!"));
     }
 

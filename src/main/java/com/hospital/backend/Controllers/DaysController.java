@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
+@RequestMapping("/api/days")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DaysController {
 

@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin
+//@CrossOrigin
+@RequestMapping("/api/shifts")
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ShiftsController {
 
