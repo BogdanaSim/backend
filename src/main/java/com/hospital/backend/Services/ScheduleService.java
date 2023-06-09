@@ -216,7 +216,17 @@ public class ScheduleService implements IScheduleService {
         kieSession.setGlobal("schedule", schedule);
         kieSession.fireAllRules();
         kieSession.dispose();
+        schedule= (Schedule) kieSession.getGlobal("schedule");
+        kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Complete.drl"));
+        for (User user : users) {
+            kieSession.insert(user);
+        }
+        kieSession.setGlobal("schedule", schedule);
+        kieSession.fireAllRules();
+        kieSession.dispose();
         Schedule newSchedule = (Schedule) kieSession.getGlobal("schedule");
+
+
         kieSession = new DroolsBeanFactory().getKieSession(ResourceFactory.newClassPathResource("com.hospital.backend.rules/ScheduleRules_12h_Free.drl"));
         newDaysList = newSchedule.getDays();
         for (Day day : newDaysList) {

@@ -1,0 +1,52 @@
+package com.hospital.backend.rules;
+dialect  "mvel"
+import com.hospital.backend.Models.*
+import java.util.List;
+global com.hospital.backend.Models.Schedule schedule;
+
+
+
+
+rule "Replace shifts 3"
+salience 10
+    when $user : User(((schedule.getNoHoursMonth($user)+4)<=(schedule.getNoWorkingDays()*8)) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%4==0);
+         $day: Day(isDateValid()) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
+    then
+//        while(((schedule.getNoHoursMonth($user)+4)<=(schedule.getNoWorkingDays()*8)) || (schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
+
+                Day day =  $day;
+                schedule.setSpecificDay(day);
+                drools.getKieRuntime().setGlobal("schedule", schedule);
+                update($user);
+//        }
+
+
+end
+
+
+
+
+
+rule "Replace shifts 4"
+salience 7
+    when $user : User(((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%4==0);
+         $day: Day(isDateValid()==false) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
+    then
+//       while((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
+            Day day1 =schedule.getDayWithoutUser($user);
+            List shifts = day1.getShifts();
+            Shift newShift = new Shift();
+            newShift.setDay(day1);
+            newShift.setUser($user);
+            newShift.setType(ShiftTypes.SHORT.getValue());
+            shifts.add(newShift);
+            day1.setShifts(shifts);
+            schedule.setSpecificDay(day1);
+            drools.getKieRuntime().setGlobal("schedule", schedule);
+            update($user);
+//            }
+
+
+end
+
+

@@ -283,7 +283,7 @@ public class Schedule {
 
     }
 
-    public Day selectDayWithShift1(User user,String value){
+    public Day selectDayWithShift1(User user,String value, String value2){
         System.out.println(this.getNoHoursMonth(user) + user.toString() +"<" +this.getNoWorkingDays()*8);
 
         List<Shift> shiftsUser;
@@ -297,9 +297,7 @@ public class Schedule {
 
         }
         Day d = new Day();
-        int maxVal = shiftDays.stream().map(s -> {
-            return s.getNoShifts(value);
-        }).max(Integer::compare).orElse(0);
+        int maxVal = shiftDays.stream().map(s -> s.getNoShifts(value)).max(Integer::compare).orElse(0);
 
         shiftDays=shiftDays.stream().filter(d1->d1.getNoShifts(value)==maxVal).toList();
         if(shiftDays.isEmpty()){
@@ -311,9 +309,9 @@ public class Schedule {
 
         Day day  = shiftDays.get(rand.nextInt(shiftDays.size()));
         System.out.println(day.toString()+ " "+day.getShifts().toString());
-        Shift shift = day.selectRandomShift(ShiftTypes.SHORT.getValue());
-        shift.setType(ShiftTypes.MORNING.getValue());
-        day.setSpecificTypeShift(shift,ShiftTypes.SHORT.getValue());
+        Shift shift = day.selectRandomShift(value);
+        shift.setType(value2);
+        day.setSpecificTypeShift(shift,value);
         return day;
 
 

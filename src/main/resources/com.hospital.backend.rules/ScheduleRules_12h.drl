@@ -85,10 +85,10 @@ rule "Add morning shifts"
 salience 5
 lock-on-active
     when
-        $day: Day(getNoShifts(ShiftTypes.MORNING.getValue())<3)
+        $day: Day(getNoShifts(ShiftTypes.MORNING.getValue())<4)
     then
 
-        $day.setNoShifts(schedule,users,3,ShiftTypes.MORNING.getValue());
+        $day.setNoShifts(schedule,users,4,ShiftTypes.MORNING.getValue());
         schedule.setSpecificDay($day);
 
 //        drools.getKieRuntime().setGlobal("users",usersShifts);
