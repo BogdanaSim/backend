@@ -1,5 +1,8 @@
 package com.hospital.backend.Models;
 
+import java.util.List;
+import java.util.Random;
+
 public enum ShiftTypes {
     MORNING("1"),
     AFTERNOON("2"),
@@ -17,4 +20,11 @@ public enum ShiftTypes {
 
 
     public String getValue() { return value; }
+
+    public static ShiftTypes randomShift()  {
+        Random random = new Random();
+        List<ShiftTypes> shiftTypes=List.of(ShiftTypes.MORNING,ShiftTypes.AFTERNOON);
+        int index= random.nextInt(shiftTypes.size());
+        return shiftTypes.get(index);
+    }
 }

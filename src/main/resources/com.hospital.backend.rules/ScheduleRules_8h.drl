@@ -85,10 +85,10 @@ rule "Add morning shifts"
 salience 5
 lock-on-active
     when
-        $day: Day(getNoShifts(ShiftTypes.MORNING.getValue())<Math.round(users.size()*0.30))
+        $day: Day(getNoShifts(ShiftTypes.MORNING.getValue())<Math.round(users.size()*0.20))
     then
 
-        $day.setNoShifts8H(schedule,users,(int)Math.round(users.size()*0.30),ShiftTypes.MORNING.getValue());
+        $day.setNoShifts8H(schedule,users,(int)Math.round(users.size()*0.20),ShiftTypes.MORNING.getValue());
         schedule.setSpecificDay($day);
 
 //        drools.getKieRuntime().setGlobal("users",usersShifts);
@@ -103,10 +103,10 @@ rule "Add afternoon shifts"
 salience 3
 lock-on-active
     when
-        $day: Day(getNoShifts(ShiftTypes.AFTERNOON.getValue())<Math.round(users.size()*0.25))
+        $day: Day(getNoShifts(ShiftTypes.AFTERNOON.getValue())<Math.round(users.size()*0.20))
     then
 
-        $day.setNoShifts8H(schedule,users,(int)Math.round(users.size()*0.25),ShiftTypes.AFTERNOON.getValue());
+        $day.setNoShifts8H(schedule,users,(int)Math.round(users.size()*0.20),ShiftTypes.AFTERNOON.getValue());
         schedule.setSpecificDay($day);
 
 //        drools.getKieRuntime().setGlobal("users",usersShifts);

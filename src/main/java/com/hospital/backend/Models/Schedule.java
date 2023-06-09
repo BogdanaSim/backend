@@ -5,13 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
 import org.sk.PrettyTable;
 
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.IntStream;
@@ -200,6 +198,26 @@ public class Schedule {
         return noHours;
     }
 
+    public int getNoHoursMonth8H(User user){
+        List<Shift> shiftsUser = new ArrayList<>();
+        for(Day day:days){
+            shiftsUser.addAll(day.getShifts().stream().filter(item->item.getUser()==user).toList());
+
+        }
+        int noHours=0;
+        List<String> options12H = List.of(ShiftTypes.MORNING.getValue(),ShiftTypes.NIGHT.getValue());
+        List<String> options8H = List.of(ShiftTypes.SHORT.getValue());
+        List<String> optionsFree = List.of(ShiftTypes.SICK_LEAVE.getValue(),ShiftTypes.REST_LEAVE.getValue());
+
+
+        for(Shift shift:shiftsUser){
+            if(!Objects.equals(shift.getType(), ShiftTypes.FREE.getValue())){
+                noHours+=8;
+            }
+        }
+        return noHours;
+    }
+
     public String getWeekByDay(Day day){
         Map<String,Boolean> weeks = this.getWeeksAndStatus();
         for (Map.Entry<String,Boolean> entry : weeks.entrySet()){
@@ -250,8 +268,10 @@ public class Schedule {
 
 
 
-    public Day selectDayWithShift(User user,String value){
-        System.out.println(this.getNoHoursMonth(user) + user.toString() +"<" +this.getNoWorkingDays()*8);
+
+
+    public Day selectDayWithShift(User user, String value, String valueReplace){
+//        System.out.println(this.getNoHoursMonth(user) + user.toString() +"<" +this.getNoWorkingDays()*8);
 
         List<Shift> shiftsUser;
         Random rand = new Random();
@@ -263,55 +283,23 @@ public class Schedule {
 //            shiftsUser.addAll(day.getShifts().stream().filter(item->item.getUser()==user).toList());
 
         }
-        Day d = new Day();
-        int maxVal = shiftDays.stream().map(s -> {
-           return s.getNoShifts(value);
-        }).max(Integer::compare).orElse(0);
-
-        shiftDays=shiftDays.stream().filter(d1->d1.getNoShifts(value)==maxVal).toList();
-        if(shiftDays.isEmpty()){
-            System.out.println("got empty day");
-            return new Day();
-
-        }
-
-        Day day  = shiftDays.get(rand.nextInt(shiftDays.size()));
-        System.out.println(day.toString()+ " "+day.getShifts().toString());
-        return day;
-
-
-
-    }
-
-    public Day selectDayWithShift1(User user,String value, String value2){
-        System.out.println(this.getNoHoursMonth(user) + user.toString() +"<" +this.getNoWorkingDays()*8);
-
-        List<Shift> shiftsUser;
-        Random rand = new Random();
-        List<Day> shiftDays=new ArrayList<>();
-        for(Day day:days){
-            shiftsUser = day.getShifts().stream().filter(item->item.getUser()==user && Objects.equals(item.getType(), value)).toList();
-            if(!shiftsUser.isEmpty())
-                shiftDays.add(day);
-//            shiftsUser.addAll(day.getShifts().stream().filter(item->item.getUser()==user).toList());
-
-        }
-        Day d = new Day();
         int maxVal = shiftDays.stream().map(s -> s.getNoShifts(value)).max(Integer::compare).orElse(0);
 
         shiftDays=shiftDays.stream().filter(d1->d1.getNoShifts(value)==maxVal).toList();
         if(shiftDays.isEmpty()){
-            System.out.println("got empty day - ");
+//            System.out.println("got empty day - ");
             return new Day();
 
 
         }
 
         Day day  = shiftDays.get(rand.nextInt(shiftDays.size()));
-        System.out.println(day.toString()+ " "+day.getShifts().toString());
-        Shift shift = day.selectRandomShift(value);
-        shift.setType(value2);
-        day.setSpecificTypeShift(shift,value);
+//        System.out.println(day.toString()+ " "+day.getShifts().toString());
+//        if(Objects.equals(value, ShiftTypes.MORNING.getValue()))
+//            System.out.println("replaced 1 with 8");
+        Shift shift = day.selectUserShift(value,user);
+        shift.setType(valueReplace);
+        day.setSpecificTypeShift(shift,value,user);
         return day;
 
 
@@ -365,5 +353,20 @@ public class Schedule {
 
         return validDays.get(rand.nextInt(validDays.size()));
 
+    }
+
+    public ShiftTypes getLessShifts(User user){
+        List<Shift> shiftsUser;
+        List<Shift> allShifts=new ArrayList<>();
+        Random rand = new Random();
+        List<Day> shiftDays=new ArrayList<>();
+        for(Day day:days){
+            shiftsUser = day.getShifts().stream().filter(item->item.getUser()==user && ((Objects.equals(item.getType(), ShiftTypes.MORNING.getValue())) || Objects.equals(item.getType(), ShiftTypes.AFTERNOON.getValue()))).toList();
+            allShifts.addAll(shiftsUser);
+
+        }
+        int n1=allShifts.stream().filter(i-> Objects.equals(i.getType(), ShiftTypes.MORNING.getValue())).toList().size();
+        int n2=allShifts.stream().filter(i-> Objects.equals(i.getType(), ShiftTypes.AFTERNOON.getValue())).toList().size();
+        return (Math.min(n1,n2)==n1) ? ShiftTypes.MORNING : ShiftTypes.AFTERNOON;
     }
 }
