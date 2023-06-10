@@ -1,5 +1,6 @@
 package com.hospital.backend.Services;
 
+import com.hospital.backend.DTOs.UserProfileDTO;
 import com.hospital.backend.Exceptions.*;
 import com.hospital.backend.Models.User;
 import com.hospital.backend.Models.UserProfile;
@@ -57,5 +58,11 @@ public class UserProfileService implements IUserProfileService{
         logger.info(String.format("Finding user profile with email %s", email));
         User user = this.userRepository.findByEmail(email).orElseThrow(UserNotFoundException::new);
         return this.userProfileRepository.findByUserId(user.getId());
+    }
+
+    public UserProfile removeProfilePicture(Long idProfile){
+        UserProfile userProfile = this.userProfileRepository.findById(idProfile).orElseThrow(UserProfileNotFoundException::new);
+        userProfile.setProfilePicture(null);
+        return this.userProfileRepository.save(userProfile);
     }
 }

@@ -44,4 +44,9 @@ public class UsersProfilesController {
         return this.userProfileConverter.convertModelToDto(this.userProfileService.update(userProfile));
     }
 
+    @GetMapping(path = "/removeProfilePicture/{profile_Id}")
+    public UserProfileDTO removeProfilePicture(@PathVariable Long profile_Id) {
+        return this.userProfileConverter.convertModelToDto(this.userProfileService.removeProfilePicture(profile_Id));
+    }
+
 }
