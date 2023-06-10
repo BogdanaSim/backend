@@ -13,6 +13,8 @@ import java.util.Optional;
 public interface VacationRequestsRepository extends JpaRepository<VacationRequest,Long> {
     Optional<VacationRequest> findById(Long id);
 
+    List<VacationRequest> findByUserId(Long user_id);
+
     @Query("SELECT e FROM VacationRequest e WHERE ((e.startDate >= ?1 AND e.startDate <= ?2) OR (e.endDate >= ?1 AND e.endDate <= ?2) )AND e.status = 'APPROVED'")
     List<VacationRequest> findRequestsWithinDateRange(LocalDate start, LocalDate end);
 

@@ -19,4 +19,5 @@ public class ScheduleDTO {
     private DepartmentDTO department;
     private String roleStaff;
     private String status;
+    private String type;
 }

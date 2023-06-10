@@ -71,4 +71,8 @@ public class VacationRequestsService implements IVacationRequestsService{
     public List<VacationRequest> findAll(){
         return this.vacationRequestsRepository.findAll();
     }
+
+    public List<VacationRequest> findByUser(Long userId){
+        return this.vacationRequestsRepository.findByUserId(userId);
+    }
 }

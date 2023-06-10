@@ -348,7 +348,7 @@ public class ScheduleService implements IScheduleService {
     public Schedule findScheduleByDateAndDepartmentAndRoleStaff(LocalDate date, Long departmentId, String roleStaff){
         Department department = new Department();
         department.setId(departmentId);
-        return schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaff(date,department,RoleStaff.valueOf(roleStaff)).get();
+        return schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaff(date,department,RoleStaff.valueOf(roleStaff)).orElseThrow(ScheduleNotFoundException::new);
     }
 
     public Schedule findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date,  Long departmentId, String roleStaff, String scheduleStatus){

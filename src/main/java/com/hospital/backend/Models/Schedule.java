@@ -52,6 +52,10 @@ public class Schedule {
     @Enumerated(EnumType.STRING)
     private ScheduleStatus scheduleStatus;
 
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private ScheduleType scheduleType;
+
     public String toString(List<User> users) {
         List<String> strings = new java.util.ArrayList<>(days.stream()
                 .map(object -> Objects.toString(object, null))

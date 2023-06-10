@@ -48,6 +48,12 @@ public class VacationRequestsController {
 
     }
 
+    @GetMapping("/findByUser/{userId}")
+    public List<VacationRequestDTO> findByUser(@PathVariable Long userId) {
+        return vacationRequestConverter.convertModelListToDtoList(this.vacationRequestsService.findByUser(userId));
+
+    }
+
     @GetMapping("/findByStatusAndUserDepartment/{status}/{departmentId}")
     public List<VacationRequestDTO> findByStatusAndUserDepartment(@PathVariable Long departmentId, @PathVariable String status) {
 
