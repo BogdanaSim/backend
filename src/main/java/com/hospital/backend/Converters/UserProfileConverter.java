@@ -28,8 +28,8 @@ public class UserProfileConverter  implements IConverter<UserProfile, UserProfil
         if(userProfile.getId() == null)
             return userDTO;
         userDTO.setId(userProfile.getId());
-        userDTO.setDetails(userDTO.getDetails());
-        userDTO.setPhoneNumber(userDTO.getPhoneNumber());
+        userDTO.setDetails(userProfile.getDetails());
+        userDTO.setPhoneNumber(userProfile.getPhoneNumber());
         userDTO.setProfilePicture(userProfile.getProfilePicture());
         userDTO.setUserId(userProfile.getUser().getId());
         return userDTO;

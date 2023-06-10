@@ -39,6 +39,7 @@ public class User {
     @Length(min = 5, max = 1000)
     private String lastName;
 
+
     @Column(name = "password")
     @Length(min = 5, max = 255)
     private String password;

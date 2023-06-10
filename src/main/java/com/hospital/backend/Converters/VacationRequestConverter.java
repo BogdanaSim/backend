@@ -24,7 +24,6 @@ public class VacationRequestConverter implements IConverter<VacationRequest, Vac
         vacationRequest.setStatus(StatusRequest.valueOf(vacationRequestDTO.getStatus()));
         user.setId(vacationRequestDTO.getUserDTO().getId());
         user.setEmail(vacationRequestDTO.getUserDTO().getEmail());
-        user.setPassword(vacationRequestDTO.getUserDTO().getPassword());
         user.setFirstName(vacationRequestDTO.getUserDTO().getFirstName());
         user.setLastName(vacationRequestDTO.getUserDTO().getLastName());
         user.setRoleStaff(RoleStaff.valueOf(vacationRequestDTO.getUserDTO().getRoleStaff()));
@@ -51,7 +50,6 @@ public class VacationRequestConverter implements IConverter<VacationRequest, Vac
         vacationRequestDTO.setStatus(vacationRequest.getStatus().toString());
         userDTO.setId(vacationRequest.getUser().getId());
         userDTO.setEmail(vacationRequest.getUser().getEmail());
-        userDTO.setPassword(vacationRequest.getUser().getPassword());
         userDTO.setFirstName(vacationRequest.getUser().getFirstName());
         userDTO.setLastName(vacationRequest.getUser().getLastName());
         userDTO.setRoleStaff(String.valueOf(vacationRequest.getUser().getRoleStaff()));

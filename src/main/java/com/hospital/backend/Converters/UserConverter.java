@@ -16,7 +16,6 @@ public class UserConverter implements IConverter<User, UserDTO>{
         if(userDTO.getId()!=null)
             user.setId(userDTO.getId());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setRoleStaff(RoleStaff.valueOf(userDTO.getRoleStaff()));
@@ -24,7 +23,7 @@ public class UserConverter implements IConverter<User, UserDTO>{
         Department department = new Department();
         department.setId(userDTO.getDepartmentId());
         user.setDepartment(department);
-        user.setVacationDays(user.getVacationDays());
+        user.setVacationDays(userDTO.getVacationDays());
         return user;
     }
 
@@ -35,7 +34,6 @@ public class UserConverter implements IConverter<User, UserDTO>{
             return userDTO;
         userDTO.setId(user.getId());
         userDTO.setEmail(user.getEmail());
-        userDTO.setPassword(user.getPassword());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
         userDTO.setRoleStaff(user.getRoleStaff().toString());

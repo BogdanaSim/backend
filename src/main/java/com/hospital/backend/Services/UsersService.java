@@ -59,7 +59,8 @@ public class UsersService implements IUsersService{
     @Override
     public User update(User user) {
         logger.info("update: " + user.getId());
-        usersRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        User userFound = usersRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        user.setPassword(userFound.getPassword());
         return usersRepository.save(user);
     }
 

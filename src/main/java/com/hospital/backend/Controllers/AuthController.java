@@ -70,7 +70,7 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .body(new UserInfoResponseDTO(userDetails.getId(),
                         userDetails.getEmail(),
-                        roles.get(0)));
+                        roles.toString()));
     }
 
     @PostMapping("/signUp")

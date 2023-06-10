@@ -24,11 +24,11 @@ public class UserProfile {
 
 
     @Column(name = "details")
-    @Length(min = 5, max = 1000)
+    @Length(max = 1000)
     private String details;
 
     @Column(name = "phone_number")
-    @Length(min = 4, max = 1000)
+    @Length(max = 20)
     private String phoneNumber;
 
     @Lob
@@ -41,7 +41,7 @@ public class UserProfile {
             CascadeType.MERGE
     },fetch = FetchType.LAZY)
     @MapsId
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "user_id")
     @ToString.Exclude
     @JsonIgnore
     private User user;

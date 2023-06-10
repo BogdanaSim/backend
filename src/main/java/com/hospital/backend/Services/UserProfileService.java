@@ -39,6 +39,7 @@ public class UserProfileService implements IUserProfileService{
 
     @Override
     public UserProfile findByUserId(Long id) {
+        UserProfile userProfile =this.userProfileRepository.findByUserId(id);
         return this.userProfileRepository.findByUserId(id);
     }
 
