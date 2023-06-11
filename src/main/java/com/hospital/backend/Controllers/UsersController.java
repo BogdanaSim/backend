@@ -36,6 +36,12 @@ public class UsersController {
         return userConverter.convertModelListToDtoList(users);
     }
 
+    @GetMapping("/findByDepartment/{id}")
+    public List<UserDTO> findByDepartment(@PathVariable Long id) {
+        List<User> users = usersService.findUserByDepartment(id);
+        return userConverter.convertModelListToDtoList(users);
+    }
+
     @PutMapping("/updateUser")
     public UserDTO updateUser(@RequestBody UserDTO userDTO) {
         User user = userConverter.convertDtoToModel(userDTO);

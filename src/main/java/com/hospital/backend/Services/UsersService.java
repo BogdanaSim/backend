@@ -84,6 +84,10 @@ public class UsersService implements IUsersService{
         }
         return users;
     }
+    public List<User> findUserByDepartment(Long id){
+        return this.usersRepository.findByDepartmentId(id);
+    }
+
 
     public List<User> getUsersWithRoleWithoutShifts(String role){
         RoleStaff roleStaff = RoleStaff.valueOf(role);
