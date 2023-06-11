@@ -39,5 +39,5 @@ public class InvitesService implements IInvitesService{
         invitesRepository.deleteById(id);
     }
 
-    
+
 }

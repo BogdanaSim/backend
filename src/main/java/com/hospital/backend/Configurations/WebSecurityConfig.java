@@ -63,7 +63,7 @@ public class WebSecurityConfig {
                 .requestMatchers("/api/users/**").permitAll().requestMatchers("/api/departments/**").permitAll()
                 .requestMatchers("/api/profiles/**").permitAll() .requestMatchers("/api/days/**").permitAll()
                 .requestMatchers("/api/schedules/**").permitAll() .requestMatchers("/api/shifts/**").permitAll()
-                .requestMatchers("/api/requests/**").permitAll()
+                .requestMatchers("/api/requests/**").permitAll().requestMatchers("/api/invites/**").permitAll()
                 .anyRequest().authenticated();
 
         http.authenticationProvider(authenticationProvider());

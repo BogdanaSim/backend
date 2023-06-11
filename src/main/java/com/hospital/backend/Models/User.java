@@ -110,16 +110,17 @@ public class User {
         return noHours;
     }
 
-    public User(String email, String password,String roleStaff,String firstName,String lastName) {
+    public User(String email, String password,String roleUser, String roleStaff,String firstName,String lastName,Long idDepartment) {
         this.email = email;
         this.password = password;
         this.vacationDays=21;
-        this.roleUser=RoleUser.USER;
+        this.roleUser=RoleUser.valueOf(roleUser);
         this.firstName=firstName;
         this.lastName=lastName;
         this.roleStaff=RoleStaff.valueOf(roleStaff);
         this.department=new Department();
-        this.department.setId(1L);
+        this.department.setId(idDepartment);
+
     }
 
 }

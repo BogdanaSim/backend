@@ -22,9 +22,9 @@ public class SignupRequestDTO {
     @Email
     private String email;
 
-    private String roleUser = RoleUser.USER.toString();
+    private String roleUser;
 
-    private String roleStaff = RoleStaff.NURSE.toString();
+    private String roleStaff;
 
     @NotBlank
     @Size(min = 6, max = 40)
@@ -38,5 +38,8 @@ public class SignupRequestDTO {
     @NotBlank
     @Size(min = 6, max = 40)
     private String password;
+
+
+    private Long idDepartment;
 
 }
