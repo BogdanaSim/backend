@@ -6,21 +6,21 @@ import java.util.Random
 import java.util.ArrayList;
 global com.hospital.backend.Models.Schedule schedule;
 
-rule "Complete Shifts"
+rule "Complete Hours"
    when $user : User(((schedule.getNoHoursMonth8H($user)+8)<=(schedule.getNoWorkingDays()*8)));
 //         $day: Day(isDateValid()==false) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
     then
 //       while((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
-            Day day1 =schedule.getDayWithoutUser($user);
-            List shifts = day1.getShifts();
+            Day dayWithoutUser =schedule.getDayWithoutUser($user);
+            List shifts = dayWithoutUser.getShifts();
             Shift newShift = new Shift();
-            newShift.setDay(day1);
+            newShift.setDay(dayWithoutUser);
             newShift.setUser($user);
             ShiftTypes shiftType= schedule.getLessShifts($user);
             newShift.setType(shiftType.getValue());
             shifts.add(newShift);
-            day1.setShifts(shifts);
-            schedule.setSpecificDay(day1);
+            dayWithoutUser.setShifts(shifts);
+            schedule.setSpecificDay(dayWithoutUser);
             drools.getKieRuntime().setGlobal("schedule", schedule);
             update($user);
 //            }

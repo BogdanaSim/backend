@@ -245,14 +245,14 @@ public class ScheduleService implements IScheduleService {
 //            daysRepository.save(day);
 //        }
 //        daysRepository.saveAll(schedule.getDays());
-//        if(schedule.getId()!=null) {
-//
-//            daysRepository.saveAll(schedule.getDays());
+        if(schedule.getId()!=null) {
+
+            daysRepository.saveAll(schedule.getDays());
 //            return schedule;
-//
-//        }
-//        return schedulesRepository.save(schedule);
-        return schedule;
+
+        }
+        return schedulesRepository.save(schedule);
+//        return schedule;
     }
 
 
@@ -320,14 +320,14 @@ public class ScheduleService implements IScheduleService {
         newSchedule.setDays(newDaysList);
         schedule=newSchedule;
 
-//        if(schedule.getId()!=null) {
-//
-//            daysRepository.saveAll(schedule.getDays());
+        if(schedule.getId()!=null) {
+
+            daysRepository.saveAll(schedule.getDays());
 //            return schedule;
-//
-//        }
-//        return schedulesRepository.save(schedule);
-        return schedule;
+
+        }
+        return schedulesRepository.save(schedule);
+//        return schedule;
     }
 
     public List<LocalDate> getDatesByDepartment(Long idDepartment) {

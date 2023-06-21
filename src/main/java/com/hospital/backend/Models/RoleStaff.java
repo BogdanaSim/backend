@@ -1,7 +1,7 @@
 package com.hospital.backend.Models;
 
 public enum RoleStaff {
-    DOCTOR,
+//    DOCTOR,
     NURSE,
     HOUSEKEEPER
 }

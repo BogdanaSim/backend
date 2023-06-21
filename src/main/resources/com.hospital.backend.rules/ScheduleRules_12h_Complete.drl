@@ -11,15 +11,15 @@ salience 10
 //         $day: Day(isDateValid()==false) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
     then
 //       while((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
-            Day day1 =schedule.getDayWithoutUser($user);
-            List shifts = day1.getShifts();
+            Day dayWithoutUser =schedule.getDayWithoutUser($user);
+            List shifts = dayWithoutUser.getShifts();
             Shift newShift = new Shift();
-            newShift.setDay(day1);
+            newShift.setDay(dayWithoutUser);
             newShift.setUser($user);
             newShift.setType(ShiftTypes.SHORT.getValue());
             shifts.add(newShift);
-            day1.setShifts(shifts);
-            schedule.setSpecificDay(day1);
+            dayWithoutUser.setShifts(shifts);
+            schedule.setSpecificDay(dayWithoutUser);
             drools.getKieRuntime().setGlobal("schedule", schedule);
             update($user);
 //            }

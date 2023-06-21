@@ -48,7 +48,6 @@ end
 //
 //end
 rule "Add night shifts"
-//agenda-group "Generate Shifts"
 salience 10
 lock-on-active
     when
@@ -56,32 +55,18 @@ lock-on-active
         $nextDay: Day(date==$day.date.plusDays(1) || $day.checkIfLast())
 
     then
-//                System.out.println("x");
-//       Map<String,Object> data = $day.setNightShifts(users,1,ShiftTypes.NIGHT.getValue(),$nextDay);
        List shiftList = $day.setNightShifts8H(schedule,users,(int)Math.round(users.size()*0.15),ShiftTypes.NIGHT.getValue(),$nextDay);
-//       List usersShifts = Collections.singletonList(data.get("users"));
-
-//       if(!$day.checkIfLast()){
-//               $nextDay.setShifts(shiftList);
-//               schedule.setSpecificDay($nextDay);
-//               }
-//           $nextDay.setShifts(shiftList);
-
        if(!$day.checkIfLast()){
            $nextDay.setFreeDays(shiftList);
            schedule.setSpecificDay($nextDay);
            update($nextDay);
        }
 
-
-
-//                  drools.getKieRuntime().setGlobal("users",usersShifts);
         schedule.setSpecificDay($day);
         update($day);
         drools.getKieRuntime().setGlobal("schedule",schedule);
 end
 rule "Add morning shifts"
-//agenda-group "Generate Shifts"
 salience 5
 lock-on-active
     when
@@ -90,8 +75,6 @@ lock-on-active
 
         $day.setNoShifts8H(schedule,users,(int)Math.round(users.size()*0.20),ShiftTypes.MORNING.getValue());
         schedule.setSpecificDay($day);
-
-//        drools.getKieRuntime().setGlobal("users",usersShifts);
         update($day);
         drools.getKieRuntime().setGlobal("schedule",schedule);
 
@@ -99,7 +82,6 @@ lock-on-active
 end
 
 rule "Add afternoon shifts"
-//agenda-group "Generate Shifts"
 salience 3
 lock-on-active
     when
@@ -108,8 +90,6 @@ lock-on-active
 
         $day.setNoShifts8H(schedule,users,(int)Math.round(users.size()*0.20),ShiftTypes.AFTERNOON.getValue());
         schedule.setSpecificDay($day);
-
-//        drools.getKieRuntime().setGlobal("users",usersShifts);
         update($day);
         drools.getKieRuntime().setGlobal("schedule",schedule);
 
