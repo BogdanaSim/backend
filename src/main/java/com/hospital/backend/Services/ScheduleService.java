@@ -170,6 +170,7 @@ public class ScheduleService implements IScheduleService {
         if(schedule.getId()!=null){
             schedule=schedulesRepository.findById(schedule.getId()).get();
             daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+            schedulesRepository.deleteById(schedule.getId());
         }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
@@ -246,12 +247,12 @@ public class ScheduleService implements IScheduleService {
 //            daysRepository.save(day);
 //        }
 //        daysRepository.saveAll(schedule.getDays());
-        if(schedule.getId()!=null) {
-
-            daysRepository.saveAll(schedule.getDays());
-//            return schedule;
-
-        }
+//        if(schedule.getId()!=null) {
+//
+//            daysRepository.saveAll(schedule.getDays());
+////            return schedule;
+//
+//        }
         return schedulesRepository.save(schedule);
 //        return schedule;
     }
@@ -263,6 +264,7 @@ public class ScheduleService implements IScheduleService {
         if(schedule.getId()!=null){
             schedule=schedulesRepository.findById(schedule.getId()).get();
             daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+            schedulesRepository.deleteById(schedule.getId());
         }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
@@ -323,12 +325,12 @@ public class ScheduleService implements IScheduleService {
         newSchedule.setDays(newDaysList);
         schedule=newSchedule;
 
-        if(schedule.getId()!=null) {
-
-            daysRepository.saveAll(schedule.getDays());
-//            return schedule;
-
-        }
+//        if(schedule.getId()!=null) {
+//
+//            daysRepository.saveAll(schedule.getDays());
+////            return schedule;
+//
+//        }
         return schedulesRepository.save(schedule);
 //        return schedule;
     }
