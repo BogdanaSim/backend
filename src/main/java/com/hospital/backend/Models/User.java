@@ -32,11 +32,11 @@ public class User {
     private String email;
 
     @Column(name = "firstName")
-    @Length(min = 5, max = 1000)
+    @Length(min = 2, max = 1000)
     private String firstName;
 
     @Column(name = "lastName")
-    @Length(min = 5, max = 1000)
+    @Length(min = 2, max = 1000)
     private String lastName;
 
 
