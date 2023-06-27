@@ -248,7 +248,7 @@ public class ScheduleService implements IScheduleService {
         if(schedule.getId()!=null) {
 
             daysRepository.saveAll(schedule.getDays());
-//            return schedule;
+            return schedule;
 
         }
         return schedulesRepository.save(schedule);
