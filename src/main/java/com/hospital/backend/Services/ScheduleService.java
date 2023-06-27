@@ -168,7 +168,7 @@ public class ScheduleService implements IScheduleService {
 
     public Schedule generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
         if(schedule.getId()!=null){
-            daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+            daysRepository.deleteAll(new ArrayList<>(daysRepository.findDaysBySchedule(schedule)));
         }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
@@ -259,7 +259,7 @@ public class ScheduleService implements IScheduleService {
 
     public Schedule generateNew8hDaysSchedule(Schedule schedule, List<User> users) {
         if(schedule.getId()!=null){
-            daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+            daysRepository.deleteAll(new ArrayList<>(daysRepository.findDaysBySchedule(schedule)));
         }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
