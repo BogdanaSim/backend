@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 //@CrossOrigin
 @RequestMapping("/api/invites")
-@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins  ={ "http://localhost:4200","https://hssh.azurewebsites.net" }, maxAge = 3600, allowCredentials="true")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 
 public class InvitesController {
