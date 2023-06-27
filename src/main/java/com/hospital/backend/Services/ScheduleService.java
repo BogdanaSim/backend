@@ -168,9 +168,7 @@ public class ScheduleService implements IScheduleService {
     @Transactional
     public Schedule generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
         if(schedule.getId()!=null){
-            schedule=schedulesRepository.findById(schedule.getId()).get();
             daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
-            schedulesRepository.deleteById(schedule.getId());
         }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
@@ -247,12 +245,12 @@ public class ScheduleService implements IScheduleService {
 //            daysRepository.save(day);
 //        }
 //        daysRepository.saveAll(schedule.getDays());
-//        if(schedule.getId()!=null) {
-//
-//            daysRepository.saveAll(schedule.getDays());
-////            return schedule;
-//
-//        }
+        if(schedule.getId()!=null) {
+
+            daysRepository.saveAll(schedule.getDays());
+//            return schedule;
+
+        }
         return schedulesRepository.save(schedule);
 //        return schedule;
     }
@@ -261,11 +259,9 @@ public class ScheduleService implements IScheduleService {
 
     @Transactional
     public Schedule generateNew8hDaysSchedule(Schedule schedule, List<User> users) {
-        if(schedule.getId()!=null){
-            schedule=schedulesRepository.findById(schedule.getId()).get();
-            daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
-            schedulesRepository.deleteById(schedule.getId());
-        }
+//        if(schedule.getId()!=null){
+//            daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
+//        }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
         Month month = schedule.getDate().getMonth();
