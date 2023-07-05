@@ -297,8 +297,6 @@ public class ScheduleService implements IScheduleService {
     public Schedule generateNew8hDaysSchedule(Schedule schedule, List<User> users) {
         if(schedule.getId()!=null){
             daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
-            schedulesRepository.save(schedule);
-
         }
         List<Day> newDaysList = new ArrayList<>();
         int year = schedule.getDate().getYear();
