@@ -1,13 +1,7 @@
 package com.hospital.backend.Controllers;
 
 import com.hospital.backend.Converters.VacationRequestConverter;
-import com.hospital.backend.DTOs.DayDTO;
-import com.hospital.backend.DTOs.ScheduleDTO;
-import com.hospital.backend.DTOs.UserDTO;
 import com.hospital.backend.DTOs.VacationRequestDTO;
-import com.hospital.backend.Models.Day;
-import com.hospital.backend.Models.Schedule;
-import com.hospital.backend.Models.User;
 import com.hospital.backend.Models.VacationRequest;
 import com.hospital.backend.Services.VacationRequestsService;
 import lombok.RequiredArgsConstructor;

@@ -26,7 +26,6 @@ public class VacationRequestsService implements IVacationRequestsService{
     @Override
     public VacationRequest save(VacationRequest vacationRequest) {
         logger.info("save vacation request: " + vacationRequest.getStartDate()+"-"+vacationRequest.getEndDate());
-//        this.vacationRequestsRepository.findById(vacationRequest.getId()).orElseThrow(VacationRequestNotFoundException::new);
         return vacationRequestsRepository.save(vacationRequest);
     }
 

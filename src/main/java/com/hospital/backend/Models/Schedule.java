@@ -144,10 +144,6 @@ public class Schedule {
 
         }
         int noHours=0;
-        List<String> options12H = List.of(ShiftTypes.MORNING.getValue(),ShiftTypes.NIGHT.getValue());
-        List<String> options8H = List.of(ShiftTypes.SHORT.getValue());
-        List<String> optionsFree = List.of(ShiftTypes.SICK_LEAVE.getValue(),ShiftTypes.REST_LEAVE.getValue());
-
 
         for(Shift shift:shiftsUser){
             if(!Objects.equals(shift.getType(), ShiftTypes.FREE.getValue()))
@@ -168,7 +164,7 @@ public class Schedule {
     }
 
     public int findHighestMultiple(int a) {
-        int b1 = (a / 12) * 12;  // Find the largest multiple of 12 less than or equal to a
+        int b1 = (a / 12) * 12;
 
         while (b1 >= 0) {
             if ((a - b1) % 8 == 0) {
@@ -177,7 +173,7 @@ public class Schedule {
             b1 -= 12;
         }
 
-        return -1;  // Return -1 if no suitable b is found
+        return -1;
     }
 
     public int getNoHoursMonth(User user){
@@ -209,10 +205,6 @@ public class Schedule {
 
         }
         int noHours=0;
-        List<String> options12H = List.of(ShiftTypes.MORNING.getValue(),ShiftTypes.NIGHT.getValue());
-        List<String> options8H = List.of(ShiftTypes.SHORT.getValue());
-        List<String> optionsFree = List.of(ShiftTypes.SICK_LEAVE.getValue(),ShiftTypes.REST_LEAVE.getValue());
-
 
         for(Shift shift:shiftsUser){
             if(!Objects.equals(shift.getType(), ShiftTypes.FREE.getValue())){
@@ -263,7 +255,6 @@ public class Schedule {
             shiftsUser = day.getShifts().stream().filter(item->item.getUser()==user).toList();
             if(shiftsUser.isEmpty())
                 freeDays.add(day);
-//            shiftsUser.addAll(day.getShifts().stream().filter(item->item.getUser()==user).toList());
 
         }
         return freeDays.get(rand.nextInt(freeDays.size()));
@@ -275,7 +266,6 @@ public class Schedule {
 
 
     public Day selectDayWithShift(User user, String value, String valueReplace){
-//        System.out.println(this.getNoHoursMonth(user) + user.toString() +"<" +this.getNoWorkingDays()*8);
 
         List<Shift> shiftsUser;
         Random rand = new Random();
@@ -284,23 +274,18 @@ public class Schedule {
             shiftsUser = day.getShifts().stream().filter(item->item.getUser()==user && Objects.equals(item.getType(), value)).toList();
             if(!shiftsUser.isEmpty())
                 shiftDays.add(day);
-//            shiftsUser.addAll(day.getShifts().stream().filter(item->item.getUser()==user).toList());
 
         }
         int maxVal = shiftDays.stream().map(s -> s.getNoShifts(value)).max(Integer::compare).orElse(0);
 
         shiftDays=shiftDays.stream().filter(d1->d1.getNoShifts(value)==maxVal).toList();
         if(shiftDays.isEmpty()){
-//            System.out.println("got empty day - ");
             return new Day();
 
 
         }
 
         Day day  = shiftDays.get(rand.nextInt(shiftDays.size()));
-//        System.out.println(day.toString()+ " "+day.getShifts().toString());
-//        if(Objects.equals(value, ShiftTypes.MORNING.getValue()))
-//            System.out.println("replaced 1 with 8");
         Shift shift = day.selectUserShift(value,user);
         shift.setType(valueReplace);
         day.setSpecificTypeShift(shift,value,user);
@@ -323,20 +308,10 @@ public class Schedule {
         List<Day> validDays = days.stream().filter(item->checkDateInterval(item.getDate(),startDate,endDate) && !item.getShifts().stream()
                 .map(Shift::getUser).distinct()
                 .toList().contains(user)).toList();
-//        if(validDays.isEmpty())
-//            return new Day();
-
-
         return validDays.get(rand.nextInt(validDays.size()));
     }
 
     public void setSpecificDay(Day day){
-//        int index = days.indexOf(new Day() {
-//            public boolean equals(Day day1) {
-//                return day.getDate().isEqual(day1.getDate());
-//            }
-//        });
-//        days.set(index,day);
         OptionalInt optionalIndex = IntStream.range(0, days.size())
                 .filter(i -> Objects.equals(days.get(i).getDate(), day.getDate()))
                 .findFirst();
@@ -351,10 +326,6 @@ public class Schedule {
         List<Day> validDays = days.stream().filter(item->!item.getShifts().stream()
                 .map(Shift::getUser).distinct()
                 .toList().contains(user)).toList();
-//        if(validDays.isEmpty())
-//            return new Day();
-
-
         return validDays.get(rand.nextInt(validDays.size()));
 
     }
@@ -362,8 +333,6 @@ public class Schedule {
     public ShiftTypes getLessShifts(User user){
         List<Shift> shiftsUser;
         List<Shift> allShifts=new ArrayList<>();
-        Random rand = new Random();
-        List<Day> shiftDays=new ArrayList<>();
         for(Day day:days){
             shiftsUser = day.getShifts().stream().filter(item->item.getUser()==user && ((Objects.equals(item.getType(), ShiftTypes.MORNING.getValue())) || Objects.equals(item.getType(), ShiftTypes.AFTERNOON.getValue()))).toList();
             allShifts.addAll(shiftsUser);

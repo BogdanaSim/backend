@@ -1,11 +1,7 @@
 package com.hospital.backend.Controllers;
 
 import com.hospital.backend.Converters.UserProfileConverter;
-import com.hospital.backend.DTOs.DepartmentDTO;
-import com.hospital.backend.DTOs.UserDTO;
 import com.hospital.backend.DTOs.UserProfileDTO;
-import com.hospital.backend.Models.Department;
-import com.hospital.backend.Models.User;
 import com.hospital.backend.Models.UserProfile;
 import com.hospital.backend.Services.UserProfileService;
 import lombok.RequiredArgsConstructor;

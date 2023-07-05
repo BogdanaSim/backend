@@ -4,41 +4,13 @@ import com.hospital.backend.Models.*
 import java.util.List;
 global com.hospital.backend.Models.Schedule schedule;
 
-//rule "Complete shifts"
-//salience 10
-////lock-on-active
-//
-//
-//
-//    when $user : User((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8));
-//    then
-////        while(schedule.getNoHoursMonth($user)+8<=schedule.getNoWorkingDays()*8){
-//
-//            Day day =  schedule.selectForCompleteMonth($user);
-//            List shifts = day.getShifts();
-//            Shift newShift = new Shift();
-//            newShift.setDay(day);
-//            newShift.setUser($user);
-//            newShift.setType(ShiftTypes.SHORT.getValue());
-//            shifts.add(newShift);
-//            day.setShifts(shifts);
-//            schedule.setSpecificDay(day);
-//            drools.getKieRuntime().setGlobal("schedule", schedule);
-//            update($user);
-////        }
-//
-//
-//end
 
-rule "Replace shifts 1"
+
+rule "Add 12-hour shifts"
 salience 7
-//lock-on-active
-
-
 
     when $user : User((schedule.getNoHoursMonth($user)+12)<=(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%12==0);
     then
-//        while((schedule.getNoHoursMonth($user)+12)<=schedule.getNoWorkingDays()*8){
                 Day day =schedule.getDayWithoutUser($user);
                 List shifts = day.getShifts();
                 Shift newShift = new Shift();
@@ -50,20 +22,14 @@ salience 7
                 schedule.setSpecificDay(day);
                 drools.getKieRuntime().setGlobal("schedule", schedule);
                 update($user);
-//        }
 
 
 end
-rule "Replace shifts 2"
+rule "Add 8-hour shifts"
 salience 5
-//lock-on-active
-
-
 
     when $user : User((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%8==0);
     then
-//        System.out.println(schedule.getNoHoursMonth($user) + $user.toString() +"<" +schedule.getNoWorkingDays()*8);
-//        while((schedule.getNoHoursMonth($user)+8)<=schedule.getNoWorkingDays()*8){
                 Day day =schedule.getDayWithoutUser($user);
                 List shifts = day.getShifts();
                 Shift newShift = new Shift();
@@ -75,49 +41,7 @@ salience 5
                 schedule.setSpecificDay(day);
                 drools.getKieRuntime().setGlobal("schedule", schedule);
                 update($user);
-//        }
 
 
 end
 
-//rule "Replace shifts 3"
-//salience -3
-//lock-on-active
-//agenda-group "Group B"
-//
-//
-//    when $user : User(schedule.getNoHoursMonth($user)<(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%4==0);
-//         $day: Day(isDateValid()) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue());
-//    then
-//        while(schedule.getNoHoursMonth($user)<schedule.getNoWorkingDays()*8){
-//
-//            Day day =  $day;
-//            schedule.setSpecificDay(day);
-//            drools.getKieRuntime().setGlobal("schedule", schedule);
-//        }
-//
-//
-//end
-//
-//rule "Replace shifts 4"
-//salience 1
-//lock-on-active
-//
-//    when $user : User(schedule.getNoHoursMonth($user)<(schedule.getNoWorkingDays()*8) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%4==0);
-//         $day: Day(isDateValid()==false) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue());
-//    then
-//       while(schedule.getNoHoursMonth($user)<schedule.getNoWorkingDays()*8){
-//            Day day1 =schedule.getDayWithoutUser($user);
-//            List shifts = day1.getShifts();
-//            Shift newShift = new Shift();
-//            newShift.setDay(day1);
-//            newShift.setUser($user);
-//            newShift.setType(ShiftTypes.SHORT.getValue());
-//            shifts.add(newShift);
-//            day1.setShifts(shifts);
-//            schedule.setSpecificDay(day1);
-//            drools.getKieRuntime().setGlobal("schedule", schedule);
-//            }
-//
-//
-//end

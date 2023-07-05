@@ -1,7 +1,6 @@
 package com.hospital.backend.Services;
 
 import com.hospital.backend.Exceptions.DepartmentNotFoundException;
-import com.hospital.backend.Exceptions.UserNotFoundException;
 import com.hospital.backend.Models.Department;
 import com.hospital.backend.Repositories.DepartmentsRepository;
 import lombok.RequiredArgsConstructor;

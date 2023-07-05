@@ -78,21 +78,10 @@ public class Day {
 
     public void setNoShifts(Schedule newSchedule, List<User> users,int noMin,String value){
         Random rand = new Random();
-        String str = this.schedule.getWeekByDay(this);
-//        String sd = str.split(";")[0];
-//        String ed=str.split(";")[1];
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate startDate = LocalDate.parse(sd,formatter);
-//        LocalDate endDate = LocalDate.parse(ed,formatter);
         while(getNoShifts(value)<noMin){
             List<User> takenUsers =   shifts.stream().distinct()
                     .map(Shift::getUser)
-                    .toList();//.stream().filter(user -> newSchedule.getNoHoursUser(user,startDate,endDate)+12>40).toList();
-//            int minValue = users.stream()
-//                    .mapToInt(item->newSchedule.getNoHoursUser(item,startDate,endDate))
-//                    .min()
-//                    .orElse(0);
-//            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 ).toList());
+                    .toList();
             List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursMonth(item) + 12 <= newSchedule.findHighestMultiple(newSchedule.getNoWorkingDays()*8) ).toList());
             int minValue = validUsers.stream()
                     .mapToInt(newSchedule::getNoHoursMonth)
@@ -100,11 +89,9 @@ public class Day {
                     .orElse(0);
             validUsers=validUsers.stream().filter(i->newSchedule.getNoHoursMonth(i)== minValue).toList();
             if(validUsers.isEmpty()) {
-                System.out.println("special");
                 return;
             }
             User randomUser = validUsers.get(rand.nextInt(validUsers.size()));
-
 
             Shift newShift = new Shift();
             newShift.setDay(this);
@@ -115,26 +102,17 @@ public class Day {
             userShifts.add(newShift);
             randomUser.setShifts(userShifts);
             newSchedule.setSpecificDay(this);
-//            int index = users.indexOf(randomUser);
-//            users.set(index,randomUser);
         }
-//        return users;
+
     }
 
     public List<Shift> setNightShifts(Schedule newSchedule, List<User> users,int noMin,String value, Day nextDay){
         Random rand = new Random();
         List<Shift> freeDays = new ArrayList<>();
-        String str = this.schedule.getWeekByDay(this);
-//        String sd = str.split(";")[0];
-//        String ed=str.split(";")[1];
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate startDate = LocalDate.parse(sd,formatter);
-//        LocalDate endDate = LocalDate.parse(ed,formatter);
         while(getNoShifts(value)<noMin){
             List<User> takenUsers =   shifts.stream().distinct()
                     .map(Shift::getUser)
-                    .toList();//.stream().filter(user -> newSchedule.getNoHoursUser(user,startDate,endDate)+12>40).toList();
-//            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 && newSchedule.getNoHoursUser(item, startDate, endDate)==minValue).toList());
+                    .toList();
             List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursMonth(item) + 12 <= newSchedule.findHighestMultiple(newSchedule.getNoWorkingDays()*8)).toList());
             int minValue = validUsers.stream()
                     .mapToInt(newSchedule::getNoHoursMonth)
@@ -154,34 +132,20 @@ public class Day {
             this.shifts.add(newShift);
             freeDays.add(freeShift);
             newSchedule.setSpecificDay(this);
-//            List<Shift> userShifts = new ArrayList<>();
-//            userShifts.add(newShift);
-//            userShifts.add(freeShift);
-//            randomUser.setShifts(userShifts);
-//            int index = users.indexOf(randomUser);
-//            users.set(index,randomUser);
 
         }
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("freeDays", freeDays);
-//        result.put("users", users);
+
         return freeDays;
     }
 
     public List<Shift> setNightShifts8H(Schedule newSchedule, List<User> users, int noMin, String value, Day nextDay){
         Random rand = new Random();
         List<Shift> freeDays = new ArrayList<>();
-        String str = this.schedule.getWeekByDay(this);
-//        String sd = str.split(";")[0];
-//        String ed=str.split(";")[1];
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate startDate = LocalDate.parse(sd,formatter);
-//        LocalDate endDate = LocalDate.parse(ed,formatter);
+
         while(getNoShifts(value)<noMin){
             List<User> takenUsers =   shifts.stream().distinct()
                     .map(Shift::getUser)
-                    .toList();//.stream().filter(user -> newSchedule.getNoHoursUser(user,startDate,endDate)+12>40).toList();
-//            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 && newSchedule.getNoHoursUser(item, startDate, endDate)==minValue).toList());
+                    .toList();
             List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursMonth8H(item) + 8 <= newSchedule.getNoWorkingDays()*8).toList());
             int minValue = validUsers.stream()
                     .mapToInt(newSchedule::getNoHoursMonth)
@@ -201,37 +165,19 @@ public class Day {
             this.shifts.add(newShift);
             freeDays.add(freeShift);
             newSchedule.setSpecificDay(this);
-//            List<Shift> userShifts = new ArrayList<>();
-//            userShifts.add(newShift);
-//            userShifts.add(freeShift);
-//            randomUser.setShifts(userShifts);
-//            int index = users.indexOf(randomUser);
-//            users.set(index,randomUser);
 
         }
-//        Map<String, Object> result = new HashMap<>();
-//        result.put("freeDays", freeDays);
-//        result.put("users", users);
+
         return freeDays;
     }
     public void setNoShifts8H(Schedule newSchedule, List<User> users,int noMin,String value){
 
         Random rand = new Random();
-        String str = this.schedule.getWeekByDay(this);
-//        String sd = str.split(";")[0];
-//        String ed=str.split(";")[1];
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//        LocalDate startDate = LocalDate.parse(sd,formatter);
-//        LocalDate endDate = LocalDate.parse(ed,formatter);
         while(getNoShifts(value)<noMin){
             List<User> takenUsers =   shifts.stream().distinct()
                     .map(Shift::getUser)
-                    .toList();//.stream().filter(user -> newSchedule.getNoHoursUser(user,startDate,endDate)+12>40).toList();
-//            int minValue = users.stream()
-//                    .mapToInt(item->newSchedule.getNoHoursUser(item,startDate,endDate))
-//                    .min()
-//                    .orElse(0);
-//            List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursUser(item, startDate, endDate) + 12 <= 24 ).toList());
+                    .toList();
+
             List<User> validUsers = new ArrayList<>(users.stream().filter(item -> !takenUsers.contains(item) && newSchedule.getNoHoursMonth8H(item) + 8 <= newSchedule.getNoWorkingDays()*8 ).toList());
             int minValue = validUsers.stream()
                     .mapToInt(newSchedule::getNoHoursMonth)
@@ -254,10 +200,9 @@ public class Day {
             userShifts.add(newShift);
             randomUser.setShifts(userShifts);
             newSchedule.setSpecificDay(this);
-//            int index = users.indexOf(randomUser);
-//            users.set(index,randomUser);
+
         }
-//        return users;
+
     }
     public void setFreeShifts(List<Shift> nShifts){
         for(Shift shift : nShifts){
@@ -323,9 +268,6 @@ public class Day {
         return getNoShifts(valueM) >=noMinM && getNoShifts(valueN)>=noMinN;
     }
 
-//    public boolean checkForUserShift(User user){
-//
-//    }
 
     public boolean checkIfLast(){
         LocalDate end = date.withDayOfMonth(date.getMonth().length(date.isLeapYear()));

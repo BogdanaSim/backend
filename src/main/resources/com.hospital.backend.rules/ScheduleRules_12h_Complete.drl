@@ -5,12 +5,10 @@ import java.util.List;
 global com.hospital.backend.Models.Schedule schedule;
 
 
-rule "Replace shifts 5"
+rule "Add additional 8-hours shifts"
 salience 10
     when $user : User(((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8))&& ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%4==0);
-//         $day: Day(isDateValid()==false) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
     then
-//       while((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
             Day dayWithoutUser =schedule.getDayWithoutUser($user);
             List shifts = dayWithoutUser.getShifts();
             Shift newShift = new Shift();
@@ -22,24 +20,20 @@ salience 10
             schedule.setSpecificDay(dayWithoutUser);
             drools.getKieRuntime().setGlobal("schedule", schedule);
             update($user);
-//            }
 
 
 end
 
-rule "Replace shifts 4"
+rule "Replace an 8-hours shift with a 12-hours shift"
 salience 5
     when $user : User(((schedule.getNoHoursMonth($user)+4)<=(schedule.getNoWorkingDays()*8)) && ((schedule.getNoWorkingDays()*8)-schedule.getNoHoursMonth($user))%4==0);
          $day: Day(isDateValid()) from schedule.selectDayWithShift($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
     then
-//        while(((schedule.getNoHoursMonth($user)+4)<=(schedule.getNoWorkingDays()*8)) || (schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
 
                 Day day =  $day;
                 schedule.setSpecificDay(day);
                 drools.getKieRuntime().setGlobal("schedule", schedule);
                 update($user);
-//        }
-
 
 end
 

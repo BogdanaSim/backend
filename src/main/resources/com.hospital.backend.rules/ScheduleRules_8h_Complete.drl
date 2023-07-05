@@ -8,9 +8,7 @@ global com.hospital.backend.Models.Schedule schedule;
 
 rule "Complete Hours"
    when $user : User(((schedule.getNoHoursMonth8H($user)+8)<=(schedule.getNoWorkingDays()*8)));
-//         $day: Day(isDateValid()==false) from schedule.selectDayWithShift1($user,ShiftTypes.SHORT.getValue(),ShiftTypes.MORNING.getValue());
     then
-//       while((schedule.getNoHoursMonth($user)+8)<=(schedule.getNoWorkingDays()*8)){
             Day dayWithoutUser =schedule.getDayWithoutUser($user);
             List shifts = dayWithoutUser.getShifts();
             Shift newShift = new Shift();
@@ -23,5 +21,4 @@ rule "Complete Hours"
             schedule.setSpecificDay(dayWithoutUser);
             drools.getKieRuntime().setGlobal("schedule", schedule);
             update($user);
-//            }
 end

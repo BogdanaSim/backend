@@ -7,12 +7,10 @@ import java.util.Arrays
 import java.util.List;
 import java.util.Map
 import java.util.Collections;
-//global com.hospital.backend.Models.User user;
 import java.lang.Math;
 global java.util.List users;
 global com.hospital.backend.Models.Schedule schedule;
-//global java.util.Map<String,Boolean> statusWeek;
-//global java.util.List<com.hospital.backend.Models.Day> days;
+
 
 dialect  "mvel"
 
@@ -23,30 +21,7 @@ declare enum DaysOfWeek
     fullName : String
 end
 
-//rule "Change Day"
-//    when
-//        $day: Day(date.getDayOfWeek() == DayOfWeek.MONDAY)
-//    then
-//        Shift shift = new Shift();
-//        shift.setDay($day);
-//        shift.setType("1");
-//        shift.setUser(user);
-////        $day.setShifts(List.of(new Shift(1L,"1",user,$day)));
-//        $day.setShifts(List.of(shift));
-//
-//end
 
-//rule "Add night shifts"
-//agenda-group "Generate Shifts"
-//    when
-//        $day: Day(getNoShifts(ShiftTypes.NIGHT.getValue())<1)
-//
-//    then
-//
-//        $day.setNoShifts(users,1,ShiftTypes.NIGHT.getValue());
-//        update($day);
-//
-//end
 rule "Add night shifts"
 salience 10
 lock-on-active
@@ -98,65 +73,4 @@ end
 
 
 
-//rule "Delete free shifts"
-////agenda-group "Delete Shifts"
-//    when
-//        $day: Day(getTypeShifts(ShiftTypes.FREE.getValue()).size()>0)
-//    then
-////        System.out.println("-");
-//        $day.removeFreeShifts();
-////        update($day);
-//
-//end
-
-//rule "Add night shifts"
-//agenda-group "Generate Shifts"
-//    when
-//        $day: Day(getNoShifts(ShiftTypes.NIGHT.getValue())<1)
-//        $nextDay: Day(date==$day.date.plusDays(1))
-//
-//    then
-////                System.out.println("x");
-//       List shiftList = $day.setNightShifts(users,1,ShiftTypes.NIGHT.getValue(),$nextDay);
-//       $nextDay.setShifts(shiftList);
-////        update($nextDay);
-////        update($day);
-//end
-//rule "Add free shifts"
-//agenda-group "Free Shifts"
-//    when
-//        $day: Day(getNoShifts(ShiftTypes.NIGHT.getValue())>=1 && checkIfLast()==false)
-//        $nextDay: Day(date==$day.date.plusDays(1))
-//    then
-//        System.out.println("x");
-//        $nextDay.setFreeShifts($day.getTypeShifts(ShiftTypes.NIGHT.getValue()));
-////        update($nextDay);
-//
-//end
-
-//agenda-group "Complete Shifts"
-//
-//rule "Add 8h shifts"
-//    when
-//        $day: Day(checkStatusDay(statusWeek))
-//    then
-//
-//        $day.setNoShifts(users,3,ShiftTypes.MORNING.getValue());
-//
-//end
-//rule "Suggest Senior developer Role"
-//    when
-//        Applicant(experienceInYears > 5 && experienceInYears <= 10)
-//        Applicant(currentSalary > 500000 && currentSalary <= 1500000)
-//    then
-//        suggestedRole.setRole("Senior developer");
-//end
-//
-//rule "Suggest Developer Role"
-//    when
-//        Applicant(experienceInYears > 0 && experienceInYears <= 5)
-//        Applicant(currentSalary > 200000 && currentSalary <= 1000000)
-//    then
-//        suggestedRole.setRole("Developer");
-//end
 

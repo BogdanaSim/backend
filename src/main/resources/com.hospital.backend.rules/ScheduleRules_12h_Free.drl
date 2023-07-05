@@ -4,12 +4,9 @@ import java.util.*;
 dialect  "mvel"
 
 rule "Delete free shifts"
-//agenda-group "Delete Shifts"
     when
         $day: Day(getTypeShifts(ShiftTypes.FREE.getValue()).size()>0)
     then
-//        System.out.println("-");
         $day.removeFreeShifts();
-//        update($day);
 
 end

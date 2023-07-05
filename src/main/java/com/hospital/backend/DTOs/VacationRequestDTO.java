@@ -1,13 +1,7 @@
 package com.hospital.backend.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hospital.backend.Models.StatusRequest;
-import com.hospital.backend.Models.User;
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-
 import java.time.LocalDate;
 
 @Data

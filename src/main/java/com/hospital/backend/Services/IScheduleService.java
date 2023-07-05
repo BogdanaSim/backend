@@ -1,6 +1,5 @@
 package com.hospital.backend.Services;
 
-import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
 
 public interface IScheduleService {

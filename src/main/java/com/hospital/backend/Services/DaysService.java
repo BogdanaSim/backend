@@ -4,27 +4,20 @@ import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Repositories.DaysRepository;
-import com.hospital.backend.Repositories.ShiftsRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.YearMonth;
-import java.util.ArrayList;
+
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DaysService implements IDaysService {
 
     private final DaysRepository daysRepository;
-
-    private final ShiftsRepository shiftsRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(DaysService.class);
 
@@ -61,22 +54,5 @@ public class DaysService implements IDaysService {
         return daysRepository.findDaysBySchedule(schedule);
     }
 
-//    public List<Day> getNewDaysSchedule(Schedule schedule) {
-//        List<Day> newDaysSchedule = new ArrayList<>();
-//        int year = schedule.getDate().getYear();
-//        Month month = schedule.getDate().getMonth();
-//        YearMonth ym = YearMonth.of(year, month);
-//        LocalDate firstOfMonth = ym.atDay(1);
-//        LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-//        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
-//        firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
-//            Day day = new Day();
-//            day.setSchedule(schedule);
-//            day.setDate(date);
-//            newDaysSchedule.add(day);
-//
-//
-//        });
-//        return newDaysSchedule;
-//    }
+
 }

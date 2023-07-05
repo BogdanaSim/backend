@@ -1,6 +1,5 @@
 package com.hospital.backend.Services;
 
-import com.hospital.backend.DTOs.UserProfileDTO;
 import com.hospital.backend.Exceptions.*;
 import com.hospital.backend.Models.User;
 import com.hospital.backend.Models.UserProfile;

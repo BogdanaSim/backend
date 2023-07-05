@@ -1,6 +1,5 @@
 package com.hospital.backend.Converters;
 
-import com.hospital.backend.DTOs.DepartmentDTO;
 import com.hospital.backend.DTOs.UserDTO;
 import com.hospital.backend.Models.*;
 import org.springframework.stereotype.Component;

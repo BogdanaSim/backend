@@ -1,17 +1,13 @@
 package com.hospital.backend.Services;
 
-import com.hospital.backend.Exceptions.DayNotFoundException;
 import com.hospital.backend.Exceptions.ScheduleNotFoundException;
 import com.hospital.backend.Models.*;
 import com.hospital.backend.Repositories.DaysRepository;
 import com.hospital.backend.Repositories.SchedulesRepository;
-import com.hospital.backend.Repositories.ShiftsRepository;
 import com.hospital.backend.Repositories.VacationRequestsRepository;
 import com.hospital.backend.RulesConfig.DroolsBeanFactory;
-import com.hospital.backend.RulesConfig.MyConsequenceExceptionHandler;
 import lombok.RequiredArgsConstructor;
-import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieRuntime;
+
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
@@ -19,16 +15,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -40,7 +32,6 @@ public class ScheduleService implements IScheduleService {
     private final SchedulesRepository schedulesRepository;
     private final DaysRepository daysRepository;
     private final VacationRequestsRepository vacationRequestsRepository;
-    private final ShiftsRepository shiftsRepository;
     private static final Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
 
@@ -49,7 +40,6 @@ public class ScheduleService implements IScheduleService {
         logger.info("save schedule: " + schedule.getDate());
         Optional<Schedule> scheduleOptional = this.schedulesRepository.findByDate(schedule.getDate());
         scheduleOptional.ifPresent(value -> schedule.setId(value.getId()));
-        //this.schedulesRepository.findByDate(schedule.getDate()).orElseThrow(ScheduleNotFoundException::new);
         return schedulesRepository.save(schedule);
     }
 
@@ -82,7 +72,6 @@ public class ScheduleService implements IScheduleService {
         YearMonth ym = YearMonth.of(year, month);
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
             Day day = new Day();
             day.setSchedule(schedule);
@@ -95,9 +84,6 @@ public class ScheduleService implements IScheduleService {
 
         });
 
-
-        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfNextMonth()));
-        // System.out.println(LocalDate.now().with(TemporalAdjusters.firstDayOfMonth()));
     }
 
     public List<Day> getDaysWithVacationShifts(Schedule schedule, List<Day> days) {
@@ -172,7 +158,6 @@ public class ScheduleService implements IScheduleService {
         YearMonth ym = YearMonth.of(year, month);
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(date -> {
             Day day = new Day();
             day.setSchedule(schedule);
@@ -191,12 +176,6 @@ public class ScheduleService implements IScheduleService {
         kieSession.setGlobal("user", user);
         kieSession.fireAllRules();
         kieSession.dispose();
-//        for(Day day: newDaysSchedule){
-//            if(!day.getShifts().isEmpty())
-//                shiftsRepository.saveAll(day.getShifts());
-//            daysRepository.save(day);
-//        }
-        //daysRepository.saveAll(newDaysSchedule);
         return newDaysSchedule;
     }
 
@@ -211,7 +190,6 @@ public class ScheduleService implements IScheduleService {
         YearMonth ym = YearMonth.of(year, month);
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         Schedule finalSchedule = schedule;
         List<Day> finalNewDaysList = newDaysList;
         schedule.setScheduleStatus(ScheduleStatus.INVALID);
@@ -233,13 +211,6 @@ public class ScheduleService implements IScheduleService {
         schedule.setDays(newDaysList);
         kieSession.setGlobal("users", users);
         kieSession.setGlobal("schedule", schedule);
-//        kieSession.setGlobal("days",newDaysList);
-//        kieSession.setGlobal("statusWeek",schedule.getWeeksAndStatus());
-//        kieSession.getAgenda().getAgendaGroup("Delete Shifts").setFocus();
-
-//        kieSession.getAgenda().getAgendaGroup("Generate Shifts").setFocus();
-//        kieSession.fireAllRules();
-
         kieSession.fireAllRules();
         kieSession.dispose();
 
@@ -271,15 +242,8 @@ public class ScheduleService implements IScheduleService {
         kieSession.fireAllRules();
         kieSession.dispose();
         newSchedule.setDays(newDaysList);
-
-//
         schedule=newSchedule;
-//        for(Day day: schedule.getDays()){
-//            if(!day.getShifts().isEmpty())
-//                shiftsRepository.saveAll(day.getShifts());
-//            daysRepository.save(day);
-//        }
-//        daysRepository.saveAll(schedule.getDays());
+
         if(schedule.getId()!=null) {
 
             daysRepository.saveAll(schedule.getDays());
@@ -287,8 +251,8 @@ public class ScheduleService implements IScheduleService {
             return schedule;
 
         }
-//        return schedulesRepository.save(schedule);
-        return schedule;
+        return schedulesRepository.save(schedule);
+//        return schedule;
     }
 
 
@@ -304,7 +268,6 @@ public class ScheduleService implements IScheduleService {
         YearMonth ym = YearMonth.of(year, month);
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate firstOfFollowingMonth = ym.plusMonths(1).atDay(1);
-        // firstOfMonth.datesUntil(firstOfFollowingMonth).forEach(System.out::println);
         Schedule finalSchedule = schedule;
         List<Day> finalNewDaysList = newDaysList;
         schedule.setScheduleStatus(ScheduleStatus.INVALID);
@@ -326,13 +289,6 @@ public class ScheduleService implements IScheduleService {
         schedule.setDays(newDaysList);
         kieSession.setGlobal("users", users);
         kieSession.setGlobal("schedule", schedule);
-//        kieSession.setGlobal("days",newDaysList);
-//        kieSession.setGlobal("statusWeek",schedule.getWeeksAndStatus());
-//        kieSession.getAgenda().getAgendaGroup("Delete Shifts").setFocus();
-
-//        kieSession.getAgenda().getAgendaGroup("Generate Shifts").setFocus();
-//        kieSession.fireAllRules();
-
         kieSession.fireAllRules();
         kieSession.dispose();
         schedule = (Schedule) kieSession.getGlobal("schedule");
@@ -364,7 +320,6 @@ public class ScheduleService implements IScheduleService {
 
         }
         return schedulesRepository.save(schedule);
-//        return schedule;
     }
 
     public List<LocalDate> getDatesByDepartment(Long idDepartment) {
@@ -394,13 +349,5 @@ public class ScheduleService implements IScheduleService {
         Optional<Schedule> schedule = schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(date,department,RoleStaff.valueOf(roleStaff),ScheduleStatus.valueOf(scheduleStatus));
         return schedule.orElseGet(Schedule::new);
     }
-    public boolean isPresentSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date,  Long departmentId, String roleStaff, String scheduleStatus){
-        Department department = new Department();
-        department.setId(departmentId);
-        Optional<Schedule> schedule = schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(date,department,RoleStaff.valueOf(roleStaff),ScheduleStatus.valueOf(scheduleStatus));
-        if(schedule.isEmpty()){
-            return false;
-        }
-        return true;
-    }
+
 }

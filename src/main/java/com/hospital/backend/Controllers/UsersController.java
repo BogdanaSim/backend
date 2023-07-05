@@ -1,14 +1,11 @@
 package com.hospital.backend.Controllers;
 
 import com.hospital.backend.Converters.UserConverter;
-import com.hospital.backend.DTOs.ShiftDTO;
 import com.hospital.backend.DTOs.UserDTO;
-import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Models.User;
 import com.hospital.backend.Services.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

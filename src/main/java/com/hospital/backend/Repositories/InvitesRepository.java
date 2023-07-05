@@ -1,8 +1,6 @@
 package com.hospital.backend.Repositories;
 
 import com.hospital.backend.Models.Invite;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

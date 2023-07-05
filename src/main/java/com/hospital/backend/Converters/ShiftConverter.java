@@ -2,7 +2,6 @@ package com.hospital.backend.Converters;
 
 import com.hospital.backend.DTOs.ShiftDTO;
 import com.hospital.backend.Models.Day;
-import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Models.User;
 import org.springframework.stereotype.Component;

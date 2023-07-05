@@ -3,13 +3,7 @@ package com.hospital.backend.Controllers;
 import com.hospital.backend.Converters.DepartmentConverter;
 import com.hospital.backend.Converters.ScheduleConverter;
 import com.hospital.backend.DTOs.ScheduleDTO;
-import com.hospital.backend.DTOs.ShiftDTO;
-import com.hospital.backend.DTOs.UserDTO;
-import com.hospital.backend.Exceptions.InvalidSolutionException;
-import com.hospital.backend.Models.Department;
 import com.hospital.backend.Models.Schedule;
-import com.hospital.backend.Models.Shift;
-import com.hospital.backend.Models.User;
 import com.hospital.backend.Services.ScheduleService;
 import com.hospital.backend.Services.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +26,6 @@ public class SchedulesController {
 
     private final ScheduleConverter scheduleConverter;
 
-    private final DepartmentConverter departmentConverter;
 
     @PostMapping("/addNewDaysSchedule")
     public ScheduleDTO addNewDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
@@ -45,7 +38,6 @@ public class SchedulesController {
     public ScheduleDTO getNewDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         schedule.setDays(scheduleService.getNewDaysSchedule(schedule,usersService.getAllUsers().get(0)));
-        System.out.println(schedule.toString(usersService.getAllUsers()));
         return scheduleDTO;
     }
 
@@ -53,20 +45,7 @@ public class SchedulesController {
     public ScheduleDTO generateNew12hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         Schedule newSchedule = scheduleService.generateNew12hDaysSchedule(schedule,usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
-        System.out.println(        newSchedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
-        //        while (true){
-//            try{
-//                schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
-//                break;
-//            } catch (InvalidSolutionException ex) {
-//                System.out.println("Invalid solution exception occurred: " + ex.getMessage());
-//            } catch (RuntimeException ex) {
-//                System.out.println("Exception occurred: " + ex.getMessage());
-//            }
-//        }
-//        schedule.setDays(scheduleService.generateNew12hDaysSchedule(schedule,usersService.getAllUsersWithoutShifts()));
-
-//        System.out.println(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
+//        System.out.println(        newSchedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
         return scheduleConverter.convertModelToDto(newSchedule);
     }
 
@@ -74,7 +53,7 @@ public class SchedulesController {
     public ScheduleDTO generateNew8hDaysSchedule(@RequestBody ScheduleDTO scheduleDTO) {
         Schedule schedule = scheduleConverter.convertDtoToModel(scheduleDTO);
         Schedule newSchedule = scheduleService.generateNew8hDaysSchedule(schedule,usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId()));
-        System.out.println(schedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
+//        System.out.println(schedule.toString(usersService.getUserByRoleAndDepartment(schedule.getRoleStaff().toString(),scheduleDTO.getDepartment().getId())));
         return scheduleConverter.convertModelToDto(newSchedule);
     }
 

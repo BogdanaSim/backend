@@ -2,8 +2,6 @@ package com.hospital.backend.Services;
 
 import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
-import com.hospital.backend.Models.Shift;
-import com.hospital.backend.Models.UserProfile;
 
 import java.util.List;
 

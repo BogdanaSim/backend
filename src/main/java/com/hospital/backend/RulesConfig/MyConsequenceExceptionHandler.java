@@ -1,8 +1,6 @@
 package com.hospital.backend.RulesConfig;
 
-import com.hospital.backend.Exceptions.InvalidSolutionException;
 import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.RuleRuntime;
 
@@ -12,13 +10,8 @@ public class MyConsequenceExceptionHandler implements ConsequenceExceptionHandle
         Throwable rootCause = getRootCause(e);
         if (rootCause instanceof IllegalArgumentException) {
             System.out.println("Error occurred: " + rootCause.getMessage());
-//            // Retry the rules by reasserting the fact(s) associated with the match
-//            for (FactHandle factHandle : match.getFactHandles()) {
-//                Object fact = ruleRuntime.getObject(factHandle);
-//                ruleRuntime.insert(fact);
-         //   }
+
         } else {
-            // For other exceptions, print the stack trace
             e.printStackTrace();
         }
     }

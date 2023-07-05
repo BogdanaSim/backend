@@ -4,7 +4,6 @@ import com.hospital.backend.Exceptions.*;
 import com.hospital.backend.Models.Schedule;
 import com.hospital.backend.Models.Shift;
 import com.hospital.backend.Repositories.ShiftsRepository;
-import com.hospital.backend.Repositories.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ShiftsService implements IShiftsService {
     private final ShiftsRepository shiftsRepository;
-    private final UsersRepository usersRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(ShiftsService.class);
 

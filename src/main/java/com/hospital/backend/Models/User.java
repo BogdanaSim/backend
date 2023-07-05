@@ -90,14 +90,13 @@ public class User {
     public String toString() {
         return firstName + ' ' + lastName ;
     }
+
     public int getNoHours(LocalDate startDate, LocalDate endDate){
-        List<Shift> shiftsUser = new ArrayList<>();
-        shiftsUser.addAll(shifts.stream().filter(item-> item.getDay().getDate().isAfter(startDate) && item.getDay().getDate().isBefore(endDate)).toList());
+        List<Shift> shiftsUser = new ArrayList<>(shifts.stream().filter(item -> item.getDay().getDate().isAfter(startDate) && item.getDay().getDate().isBefore(endDate)).toList());
 
         int noHours=0;
         List<String> options12H = List.of(ShiftTypes.MORNING.getValue(),ShiftTypes.NIGHT.getValue());
         List<String> options8H = List.of(ShiftTypes.SHORT.getValue());
-        List<String> optionsFree = List.of(ShiftTypes.SHORT.getValue());
 
 
         for(Shift shift:shiftsUser){

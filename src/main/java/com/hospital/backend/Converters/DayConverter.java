@@ -1,7 +1,6 @@
 package com.hospital.backend.Converters;
 
 import com.hospital.backend.DTOs.DayDTO;
-import com.hospital.backend.DTOs.ScheduleDTO;
 import com.hospital.backend.Models.Day;
 import com.hospital.backend.Models.Schedule;
 import org.springframework.stereotype.Component;

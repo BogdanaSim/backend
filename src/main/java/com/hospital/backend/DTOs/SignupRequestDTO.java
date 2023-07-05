@@ -1,7 +1,6 @@
 package com.hospital.backend.DTOs;
 
-import com.hospital.backend.Models.RoleStaff;
-import com.hospital.backend.Models.RoleUser;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
