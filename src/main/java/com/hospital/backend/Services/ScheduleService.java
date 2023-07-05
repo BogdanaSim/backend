@@ -153,7 +153,15 @@ public class ScheduleService implements IScheduleService {
                         }
                     }
             );
+            days.stream()
+                    .filter(d -> d.getDate().equals(firstDay.getDate()))
+                    .findFirst()
+                    .ifPresent(d1 -> {
+                        int index = days.indexOf(d1);
+                        days.set(index, firstDay);
+                    });
         }
+        
         return days;
     }
 
