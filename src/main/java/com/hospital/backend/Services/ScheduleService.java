@@ -161,7 +161,7 @@ public class ScheduleService implements IScheduleService {
                         days.set(index, firstDay);
                     });
         }
-        
+
         return days;
     }
 
@@ -283,6 +283,7 @@ public class ScheduleService implements IScheduleService {
 //        daysRepository.saveAll(schedule.getDays());
         if(schedule.getId()!=null) {
 
+            schedulesRepository.setTypeForSchedule(schedule.getScheduleType(),schedule.getId());
             daysRepository.saveAll(schedule.getDays());
             return schedule;
 
@@ -358,7 +359,7 @@ public class ScheduleService implements IScheduleService {
         schedule=newSchedule;
 
         if(schedule.getId()!=null) {
-
+            schedulesRepository.setTypeForSchedule(schedule.getScheduleType(),schedule.getId());
             daysRepository.saveAll(schedule.getDays());
             return schedule;
 
