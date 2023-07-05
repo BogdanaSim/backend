@@ -21,6 +21,6 @@ public interface SchedulesRepository extends JpaRepository<Schedule,Long> {
     Optional<Schedule> findSchedulesByDateAndDepartmentAndRoleStaff(LocalDate date, Department department, RoleStaff roleStaff);
     Optional<Schedule> findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date, Department department, RoleStaff roleStaff, ScheduleStatus scheduleStatus);
     @Modifying
-    @Query("update Schedule s set s.scheduleType = ?1 where s.id = ?2")
+    @Query("UPDATE Schedule s SET s.scheduleType = :scheduleType WHERE s.id = :id")
     void setTypeForSchedule(ScheduleType scheduleType, Long id);
 }
