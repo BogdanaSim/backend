@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
@@ -106,6 +107,7 @@ public class ScheduleService implements IScheduleService {
         LocalDate firstOfMonth = ym.atDay(1);
         LocalDate lastOfMonth = ym.atEndOfMonth();
         List<VacationRequest> vacationRequests = vacationRequestsRepository.findRequestsWithinDateRange(firstOfMonth, lastOfMonth);
+
         for (VacationRequest vacationRequest : vacationRequests) {
             LocalDate overlappingStart = vacationRequest.getStartDate().isBefore(firstOfMonth) ? firstOfMonth : vacationRequest.getStartDate();
             LocalDate overlappingEnd = vacationRequest.getEndDate().isAfter(lastOfMonth) ? lastOfMonth : vacationRequest.getEndDate();
@@ -125,9 +127,35 @@ public class ScheduleService implements IScheduleService {
 
         }
 
-        return days;
+//        return days;
+        return this.setFreeDaysForFirstDay(schedule,days);
+
     }
 
+
+    public List<Day> setFreeDaysForFirstDay(Schedule schedule, List<Day> days){
+        Optional<Schedule> schedule1=schedulesRepository.findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(schedule.getDate().minusMonths(1),schedule.getDepartment(),schedule.getRoleStaff(),ScheduleStatus.VALID);
+        if(schedule1.isPresent()){
+            Day firstDay = days.stream().filter(d->Objects.equals(d.getDate(),schedule.getDate())).findFirst().get();
+            LocalDate maxDate =  Collections.max(schedule1.get().getDays(), Comparator.comparing(Day::getDate)).getDate();
+            Day lastDay = schedule1.get().getDays().stream().filter(d->Objects.equals(d.getDate(),maxDate)).findFirst().get();
+            List<Shift> shifts = lastDay.getShifts();
+            shifts.stream().filter(s-> Objects.equals(s.getType(), ShiftTypes.NIGHT.getValue())).forEach(
+                    s->{
+                        if(firstDay.getShifts().stream().filter(s1->s1.getUser()==s.getUser()).findFirst().isEmpty()){
+                            List<Shift> shifts1 = firstDay.getShifts();
+                            Shift newShift = new Shift();
+                            newShift.setDay(firstDay);
+                            newShift.setUser(s.getUser());
+                            newShift.setType(ShiftTypes.FREE.getValue());
+                            shifts1.add(newShift);
+                            firstDay.setShifts(shifts1);
+                        }
+                    }
+            );
+        }
+        return days;
+    }
 
     @Transactional
     public List<Day> getNewDaysSchedule(Schedule schedule, User user) {
