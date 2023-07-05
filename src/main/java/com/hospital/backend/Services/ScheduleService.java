@@ -9,7 +9,6 @@ import com.hospital.backend.Repositories.ShiftsRepository;
 import com.hospital.backend.Repositories.VacationRequestsRepository;
 import com.hospital.backend.RulesConfig.DroolsBeanFactory;
 import com.hospital.backend.RulesConfig.MyConsequenceExceptionHandler;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntime;
@@ -30,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.kie.api.runtime.rule.FactHandle;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -165,7 +165,6 @@ public class ScheduleService implements IScheduleService {
         return days;
     }
 
-    @Transactional
     public List<Day> getNewDaysSchedule(Schedule schedule, User user) {
         List<Day> newDaysSchedule = new ArrayList<>();
         int year = schedule.getDate().getYear();
@@ -201,7 +200,7 @@ public class ScheduleService implements IScheduleService {
         return newDaysSchedule;
     }
 
-
+    @Transactional
     public Schedule generateNew12hDaysSchedule(Schedule schedule, List<User> users) {
         if(schedule.getId()!=null){
             daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
@@ -283,18 +282,18 @@ public class ScheduleService implements IScheduleService {
 //        daysRepository.saveAll(schedule.getDays());
         if(schedule.getId()!=null) {
 
-            schedulesRepository.setTypeForSchedule(schedule.getScheduleType(),schedule.getId());
             daysRepository.saveAll(schedule.getDays());
+            schedulesRepository.setTypeForSchedule(schedule.getScheduleType(),schedule.getId());
             return schedule;
 
         }
-        return schedulesRepository.save(schedule);
-//        return schedule;
+//        return schedulesRepository.save(schedule);
+        return schedule;
     }
 
 
 
-
+    @Transactional
     public Schedule generateNew8hDaysSchedule(Schedule schedule, List<User> users) {
         if(schedule.getId()!=null){
             daysRepository.deleteAll(daysRepository.findDaysBySchedule(schedule));
@@ -359,8 +358,8 @@ public class ScheduleService implements IScheduleService {
         schedule=newSchedule;
 
         if(schedule.getId()!=null) {
-            schedulesRepository.setTypeForSchedule(schedule.getScheduleType(),schedule.getId());
             daysRepository.saveAll(schedule.getDays());
+            schedulesRepository.setTypeForSchedule(schedule.getScheduleType(),schedule.getId());
             return schedule;
 
         }

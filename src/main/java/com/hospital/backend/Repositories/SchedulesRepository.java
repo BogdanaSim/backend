@@ -1,6 +1,7 @@
 package com.hospital.backend.Repositories;
 
 import com.hospital.backend.Models.*;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,5 @@ public interface SchedulesRepository extends JpaRepository<Schedule,Long> {
     Optional<Schedule> findSchedulesByDateAndDepartmentAndRoleStaffAndScheduleStatus(LocalDate date, Department department, RoleStaff roleStaff, ScheduleStatus scheduleStatus);
     @Modifying
     @Query("update Schedule s set s.scheduleType = ?1 where s.id = ?2")
-    int setTypeForSchedule(ScheduleType scheduleType, Long id);
+    void setTypeForSchedule(ScheduleType scheduleType, Long id);
 }
